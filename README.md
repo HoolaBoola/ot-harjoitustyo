@@ -1,6 +1,23 @@
-An h1 header
+Ohjelmistotekniikka, harjoitustyö
 ============
+<<<<<<< HEAD
 😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀
+=======
+
+Tehtävät
+-----------
+
+### Viikko1 ####
+
+[gitlog.txt](laskarit/viikko1/gitlog.txt)
+
+[komentorivi.txt](laskarit/viikko1/komentorivi.txt)
+
+
+
+
+
+>>>>>>> 7f1ff99d3c96afb86e374d7642e9aefc91f93b58
 Paragraphs are separated by a blank line.
 
 2nd paragraph. *Italic*, **bold**, and `monospace`. Itemized lists
