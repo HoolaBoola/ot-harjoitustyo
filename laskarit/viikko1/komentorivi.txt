@@ -1,0 +1,15 @@
+.
+├── harjoitustyo
+│  ├── laskarit
+│  │  └── viikko1
+│  └── README.md
+├── tree.txt
+└── viikko1
+   ├── catstat
+   ├── eka.txt
+   ├── kolmas.txt
+   ├── stuff
+   │  └── xxxx
+   └── tiedostoja
+      ├── file3
+      └── file22
