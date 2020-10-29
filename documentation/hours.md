@@ -4,3 +4,4 @@
 | :----:|:-----| :-----|
 | 29.10. | 1    | sovelluksen ideointi |
 | | 2 | määrittelydokumentti|
+| | 1 | projektin pistäminen pystyyn |
