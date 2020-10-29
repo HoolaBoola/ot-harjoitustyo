@@ -1,6 +1,9 @@
 Ohjelmistotekniikka, harjoitustyö
 ============
 
+## [Työaikakirjanpito](documentation/hours.md)
+-----------
+
 Tehtävät
 -----------
 
