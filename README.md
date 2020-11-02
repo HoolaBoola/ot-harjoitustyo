@@ -1,9 +1,9 @@
 Ohjelmistotekniikka, harjoitustyö
 ============
 ### 1. Sisällysluettelo
-1. [Sisällysluettelo](#1.-sisällysluettelo)
-2. [Laskarit](#2.-laskarit)
-3. [Dokumentaatio](#3.-dokumentaatio)
+1. [Sisällysluettelo](#1-sisällysluettelo)
+2. [Laskarit](#2-laskarit)
+3. [Dokumentaatio](#3-dokumentaatio)
 
 
 -----------
