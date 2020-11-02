@@ -13,8 +13,7 @@ public class UIManager extends Application {
         StackPane root = new StackPane();
 
 //        File file = SongFile.getFileFromExplorer(stage, "Audio files", "*.mp3", "*.wav", "*.ogg").get();
-        DBManager manager = new DBManager(System.getProperty("user.dir"));
-        manager.createDatabase("hei.sqlite");
+        DBManager manager = new DBManager(System.getProperty("user.dir"), "player.db");
         Scene scene = new Scene(root, 300, 250);
 
 //        stage.setScene(scene);
