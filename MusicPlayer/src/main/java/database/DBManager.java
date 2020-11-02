@@ -8,8 +8,12 @@ import java.sql.SQLException;
 public class DBManager {
     private String path;
 
-    public DBManager(String path) throws ClassNotFoundException {
-        Class.forName("org.sqlite.JDBC");
+    public DBManager(String path) {
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         this.path = path;
     }
 
