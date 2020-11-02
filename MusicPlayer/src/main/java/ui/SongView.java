@@ -13,9 +13,8 @@ public class SongView extends Application {
     @Override
     public void start(Stage stage) {
         StackPane root = new StackPane();
-
-        File file = SongFile.openExplorer(stage).get();
-
+    
+        File file = SongFile.getFileFromExplorer(stage, "Audio files", "*.mp3", "*.wav", "*.ogg").get();
         Scene scene = new Scene(root, 300, 250);
 
         stage.setScene(scene);
