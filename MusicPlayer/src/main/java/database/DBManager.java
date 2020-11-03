@@ -14,7 +14,8 @@ public class DBManager {
 
     /**
      * Constructor with path and file name separate, calls another constructor.
-     * @param path Path to the working directory the database should be created in / accessed.
+     *
+     * @param path     Path to the working directory the database should be created in / accessed.
      * @param fileName The filename that the database should be given.
      */
     public DBManager(String path, String fileName) {
@@ -23,10 +24,11 @@ public class DBManager {
 
     /**
      * Constructor with only one parameter
+     *
      * @param path Path + filename where the database should be.
      */
     public DBManager(String path) {
-        
+
         // Does stuff so that SQLite JDBC driver is recognized?
         try {
             Class.forName("org.sqlite.JDBC");
@@ -38,6 +40,7 @@ public class DBManager {
 
     /**
      * Private method that creates a connection to a database and returns it. Shouldn't be called often.
+     *
      * @param url Path to the correct location prefixed with the correct JDBC driver information
      * @return Optional containing either empty or java.sql.Connection
      */
