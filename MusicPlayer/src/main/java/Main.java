@@ -6,7 +6,7 @@ import static javafx.application.Application.launch;
 public class Main {
     public static void main(String[] args) {
 
-        DBManager man = new DBManager(System.getProperty("user.dir"), "moi");
-//        launch(UIManager.class);
+//        DBManager man = new DBManager(System.getProperty("user.dir"), "moi");
+        UIManager.start();
     }
 }
