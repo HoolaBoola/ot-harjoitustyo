@@ -12,3 +12,7 @@ The application is a minimalistic music player that allows the user to load thei
     * Playlists will also have ways to edit and delete them
     * Cover images for playlists
 * Browse added playlists and songs
+
+## Simple database
+
+![Database diagram](./database_diagram.png)
