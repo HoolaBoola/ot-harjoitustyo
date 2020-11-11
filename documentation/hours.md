@@ -8,3 +8,4 @@
 | 1.11.  | 2    | ensimmäiset luokat, äänitiedoston haku |
 | 2.11.  | 3    | SQLite-riippuvuus kuntoon |
 | 3.11.  | 3    | Tietorakenteiden väsertämistä, graafisen käyttöliittymän aloittamista | 
+| 11.11. | 1    | FXML-loader toimii |

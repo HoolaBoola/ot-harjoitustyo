@@ -2,9 +2,13 @@ package ui;
 
 import database.DBManager;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class UIManager extends Application {
     
@@ -13,14 +17,11 @@ public class UIManager extends Application {
     }
 
     @Override
-    public void start(Stage stage) {
-        StackPane root = new StackPane();
-        
-//        File file = SongFile.getFileFromExplorer(stage, "Audio files", "*.mp3", "*.wav", "*.ogg").get();
-//        DBManager manager = new DBManager("player.db");
-        Scene scene = new Scene(root, 300, 250);
+    public void start(Stage stage) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("FXML-templates/IncrementUI.fxml"));
 
-//        stage.setScene(scene);
+        stage.setScene(new Scene(root));
+        
         stage.show();
     }
 }
