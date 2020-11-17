@@ -1,6 +1,6 @@
 package ui;
 
-import dao.FileRetriever;
+import io.FileGraphicalRetriever;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -14,7 +14,7 @@ public class SongView extends Application {
     public void start(Stage stage) {
         StackPane root = new StackPane();
     
-        File file = FileRetriever.getFileFromExplorer(stage, "Audio files", "*.mp3", "*.wav", "*.ogg").get();
+        File file = FileGraphicalRetriever.getFile(stage, "Audio files", "*.mp3", "*.wav", "*.ogg").get();
         Scene scene = new Scene(root, 300, 250);
 
         stage.setScene(scene);
