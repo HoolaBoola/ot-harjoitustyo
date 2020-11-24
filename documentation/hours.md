@@ -10,3 +10,4 @@
 | 3.11.  | 3    | Tietorakenteiden väsertämistä, graafisen käyttöliittymän aloittamista | 
 | 11.11. | 1    | FXML-loader toimii |
 | 17.11. | 3    | Äänitiedoston toistaminen toimii jotenkuten |
+| 23.11. | 6    | |
