@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.Optional;
 
-public class FileGraphicalRetriever implements FileRetriever {
+public class GraphicalFireRetriever implements FileRetriever {
 
     /**
      * Open the system default file explorer and let user select a file of a type specified with <i>filters</i>

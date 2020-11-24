@@ -32,6 +32,7 @@ public class SongPlayer {
             public void run() {
                 try {
                     player.play();
+                    closePlayer();
                 } catch (Exception e) {
                     System.out.println(e);
                 }

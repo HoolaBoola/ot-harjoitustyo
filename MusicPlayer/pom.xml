@@ -98,12 +98,18 @@
             <artifactId>javafx-media</artifactId>
             <version>11.0.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>3.17.1</version>
+        </dependency>
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.7.2</version>
         </dependency>
+
+
     </dependencies>
 
 </project>

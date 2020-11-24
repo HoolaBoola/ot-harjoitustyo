@@ -1,46 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.IncrementUIController">
+<Pane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.IncrementUIController">
    <children>
-      <GridPane layoutX="189.0" layoutY="293.0" maxHeight="-Infinity" prefHeight="28.0" prefWidth="222.0" AnchorPane.bottomAnchor="79.0" AnchorPane.leftAnchor="189.0" AnchorPane.rightAnchor="189.0" AnchorPane.topAnchor="293.0">
-        <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <AnchorPane>
-               <children>
-                  <Button fx:id="previous" layoutX="7.0" mnemonicParsing="false" text="Button" />
-               </children>
-            </AnchorPane>
-            <AnchorPane GridPane.columnIndex="1">
-               <children>
-                  <Button fx:id="playpause" layoutX="7.0" mnemonicParsing="false" onAction="#songPlayPause" text="Button" />
-               </children>
-            </AnchorPane>
-            <AnchorPane GridPane.columnIndex="2">
-               <children>
-                  <Button fx:id="next" layoutX="7.0" mnemonicParsing="false" text="Button" />
-               </children>
-            </AnchorPane>
-         </children>
-      </GridPane>
-      <AnchorPane layoutX="200.0" layoutY="60.0">
-         <children>
-            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-         </children>
-      </AnchorPane>
+      <TabPane>
+         <tabs>
+            <Tab closable="false" text="Play">
+               <content>
+                  <AnchorPane prefHeight="400.0" prefWidth="600.0">
+                     <children>
+                        <GridPane layoutX="189.0" layoutY="293.0" maxHeight="-Infinity" prefHeight="28.0" prefWidth="222.0" AnchorPane.bottomAnchor="79.0" AnchorPane.leftAnchor="189.0" AnchorPane.rightAnchor="189.0" AnchorPane.topAnchor="293.0">
+                          <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <AnchorPane>
+                                 <children>
+                                    <Button fx:id="previous" layoutX="7.0" mnemonicParsing="false" text="Button" />
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane GridPane.columnIndex="1">
+                                 <children>
+                                    <Button fx:id="playpause" layoutX="7.0" mnemonicParsing="false" onAction="#songPlayPause" text="Button" />
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane GridPane.columnIndex="2">
+                                 <children>
+                                    <Button fx:id="next" layoutX="7.0" mnemonicParsing="false" text="Button" />
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </GridPane>
+                        <AnchorPane layoutX="200.0" layoutY="60.0">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab closable="false" text="Songs">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+            <Tab closable="false" text="Playlists" />
+            <Tab closable="false" text="Settings">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+         </tabs>
+      </TabPane>
    </children>
-</AnchorPane>
+</Pane>
