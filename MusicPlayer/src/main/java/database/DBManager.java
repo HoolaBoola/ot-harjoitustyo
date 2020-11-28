@@ -28,7 +28,8 @@ public class DBManager {
         System.out.println("Database created: " + dbCreated);
     }
 
-
+    
+    
     /**
      * Private method that creates a connection to a database and returns it.
      *

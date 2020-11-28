@@ -5,27 +5,26 @@ import database.DBManager;
 import java.sql.SQLException;
 import java.util.List;
 
-public class SongDao implements Dao<Song, Integer> {
-
+public class PlaylistDao implements Dao<Playlist, Integer> {
+    
     private DBManager db;
-
-    public SongDao(DBManager db) {
+    
+    public PlaylistDao(DBManager db) {
         this.db = db;
     }
-
-
+    
     @Override
-    public void create(Song object) throws SQLException {
-        
+    public void create(Playlist object) throws SQLException {
+
     }
 
     @Override
-    public Song read(Integer key) throws SQLException {
+    public Playlist read(Integer key) throws SQLException {
         return null;
     }
 
     @Override
-    public Song update(Song object) throws SQLException {
+    public Playlist update(Playlist object) throws SQLException {
         return null;
     }
 
@@ -35,7 +34,8 @@ public class SongDao implements Dao<Song, Integer> {
     }
 
     @Override
-    public List<Song> list() throws SQLException {
+    public List<Playlist> list() throws SQLException {
         return null;
+
     }
 }
