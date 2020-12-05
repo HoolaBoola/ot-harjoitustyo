@@ -28,10 +28,16 @@ public class DBManager {
         System.out.println("Database created: " + dbCreated);
     }
 
-    
+    /**
+     * calls getConnection(url)
+     * @return Option<Connection>
+     */
+    public Optional<Connection> getConnection() {
+        return getConnection("jdbc:sqlite:" + path);
+    }
     
     /**
-     * Private method that creates a connection to a database and returns it.
+     *  method that creates a connection to a database and returns it.
      *
      * @param url Path to the correct location prefixed with the correct JDBC driver information
      * @return Optional containing either empty or java.sql.Connection
@@ -61,7 +67,7 @@ public class DBManager {
             // do something
             return false;
         }
-        Optional<Connection> result = getConnection("jdbc:sqlite:" + path);
+        Optional<Connection> result = getConnection();
         if (result.isEmpty()) {
             return false;
         }

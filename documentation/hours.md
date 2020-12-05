@@ -11,3 +11,4 @@
 | 11.11. | 1    | FXML-loader toimii |
 | 17.11. | 3    | Äänitiedoston toistaminen toimii jotenkuten |
 | 23.11. | 6    | |
+| 5.12. | 1     | |

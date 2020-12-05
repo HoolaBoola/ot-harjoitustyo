@@ -4,8 +4,7 @@ CREATE TABLE Songs
     name       varchar(255),
     created_at DATETIME,
     artist     varchar(255),
-    file       VARBINARY,
-    picture    IMAGE
+    file       VARBINARY
 );
 CREATE TABLE Playlists
 (
