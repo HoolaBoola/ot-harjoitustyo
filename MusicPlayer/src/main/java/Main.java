@@ -1,26 +1,24 @@
-import dao.Song;
+import dao.PlaylistDao;
 import dao.SongDao;
 import database.DBManager;
-import io.GraphicalFireRetriever;
-import org.jline.builtins.Completers.*;
-import org.jline.terminal.TerminalBuilder;
-import org.jline.terminal.impl.PosixPtyTerminal;
-import org.jline.terminal.impl.jna.linux.LinuxNativePty;
-import ui.*;
-import ui.UIManager;
+import io.ConsoleIO;
+import ui.ConsoleUI;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Date;
-import java.sql.SQLException;
+import java.util.Scanner;
 
 
 public class Main {
     public static void main(String[] args) {
 
+        ConsoleIO io = new ConsoleIO(new Scanner(System.in));
+        DBManager db = new DBManager("player.db");
+        SongDao songs = new SongDao(db);
+        PlaylistDao playlists = new PlaylistDao(db);
+        var ui = new ConsoleUI(io, playlists, songs);
 
-        GraphicalUI ui = new GraphicalUI();
         ui.startApplication();
+//        GraphicalUI ui = new GraphicalUI();
+//        ui.startApplication();
 //        try {
 //            UIManager manager;
 //            manager = new UIManager(new ConsoleUI(TerminalBuilder.terminal()));
@@ -30,6 +28,6 @@ public class Main {
 //        }
 //        ;
 
-        
+
     }
 }

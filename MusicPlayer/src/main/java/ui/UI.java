@@ -1,4 +1,4 @@
-package dao;
+package ui;
 
 public interface UI {
     
