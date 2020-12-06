@@ -3,6 +3,7 @@ package io;
 import dao.FileRetriever;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.util.Optional;
@@ -18,7 +19,7 @@ public class GraphicalFireRetriever implements FileRetriever {
      */
     
     // refactor method so that Stage isn't required...
-    public static Optional<File> getFile(String typeName, String... filters) {
+    public static Optional<byte[]> getFile(String typeName, String... filters) {
         Stage stage = new Stage();
         
         
@@ -37,7 +38,7 @@ public class GraphicalFireRetriever implements FileRetriever {
         try{
             File file = fileChooser.showOpenDialog(stage);
             System.out.println("File chosen: " + file.getAbsolutePath());
-            return Optional.of(file);
+            return Optional.of(FileUtils.readFileToByteArray(file));
         } catch (Exception e) {
             return Optional.empty();
         }

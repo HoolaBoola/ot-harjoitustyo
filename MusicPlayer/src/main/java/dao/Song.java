@@ -1,8 +1,5 @@
 package dao;
 
-import javafx.scene.image.Image;
-
-import java.io.File;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +9,7 @@ public class Song {
     private String name;
     private Date created_at;
     private String artist;
-    private File file;
+    private byte[] file;
 
     public int getId() {
         return id;
@@ -46,11 +43,11 @@ public class Song {
         this.artist = artist;
     }
 
-    public File getFile() {
+    public byte[] getFile() {
         return file;
     }
 
-    public void setFile(File file) {
+    public void setFile(byte[] file) {
         this.file = file;
     }
 
@@ -62,9 +59,19 @@ public class Song {
         this.playlists = playlists;
     }
 
+    @Override
+    public String toString() {
+        return "Song{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", created_at=" + created_at +
+            ", artist='" + artist + '\'' +
+            '}';
+    }
+
     private List<Playlist> playlists;
 
-    public Song(int id, String name, Date created_at, String artist, File file) {
+    public Song(int id, String name, Date created_at, String artist, byte[] file) {
         this.id = id;
         this.name = name;
         this.created_at = created_at;

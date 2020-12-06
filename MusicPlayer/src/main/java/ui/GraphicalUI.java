@@ -27,17 +27,15 @@ public class GraphicalUI extends Application implements UI {
         SongDao dao = new SongDao(man);
         var song = new Song(
             1,
-            "moi",
+            "heijei",
             new Date(System.currentTimeMillis()),
-            "jaa",
+            "moimoi",
             GraphicalFireRetriever.getFile("audio files", "*.mp3", "*.wav").get()
         );
 
-        try {
-            System.out.println(dao.create(song));
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        
+        System.out.println(dao.update(song));
+
 //        Scene scene = new Scene(new Pane());
 //        Optional<File> returned = GraphicalFireRetriever.getFile(stage, "Audio files", "*.mp3", "*.wav");
 //        if (returned.isPresent()) {

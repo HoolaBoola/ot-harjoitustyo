@@ -55,7 +55,7 @@ public class DBManager {
 
             return Optional.of(conn);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return Optional.empty();
     }

@@ -2,9 +2,7 @@ package dao;
 
 import database.DBManager;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,7 +18,7 @@ public class SongDao implements Dao<Song, Integer> {
 
 
     @Override
-    public boolean create(Song object) throws SQLException {
+    public boolean create(Song object) {
         String sql = "INSERT INTO Songs (name, created_at, artist, file) VALUES (?,?,?,?)";
         try {
             var result = db.getConnection();
@@ -31,17 +29,17 @@ public class SongDao implements Dao<Song, Integer> {
             var conn = result.get();
 
             var stmt = conn.prepareStatement(sql);
-            stmt.setString(1, object.getName());
-            stmt.setDate(2, object.getCreated_at());
-            stmt.setString(3, object.getArtist());
-            stmt.setBinaryStream(4, new FileInputStream(object.getFile()), (int) object.getFile().length());
+
+            sqlify(stmt, object);
+
             stmt.executeUpdate();
             conn.close();
-            
+
             return true;
-        } catch (SQLException | FileNotFoundException e) {
-            System.out.println(e.getMessage());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
         return false;
     }
 
@@ -64,15 +62,32 @@ public class SongDao implements Dao<Song, Integer> {
             }
 
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
 
         return null;
     }
 
     @Override
-    public Song update(Song object) throws SQLException {
-        return null;
+    public Song update(Song object) {
+        String sql = "UPDATE Songs"
+            + "SET name = ?, created_at = ?, artist = ?, file = ?"
+            + "WHERE id = ?";
+        try {
+
+            var result = db.getConnection();
+            if (result.isEmpty()) {
+                throw new SQLException();
+            }
+            
+            var conn = result.get();
+            var stmt = conn.prepareStatement(sql);
+            sqlify(stmt, object);
+            stmt.setInt(5, object.getId());
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return read(object.getId());
     }
 
     @Override
@@ -105,17 +120,32 @@ public class SongDao implements Dao<Song, Integer> {
         return songs;
     }
 
-    private static Song songify(ResultSet rs) throws SQLException {
-        Song song = null;
-        song = new Song(
-            rs.getInt("id"),
-            rs.getString("name"),
-            rs.getDate("created_at"),
-            rs.getString("artist"),
-            new File(String.valueOf(rs.getBlob("file"))
-            )
-        );
+    private static void sqlify(PreparedStatement stmt, Song song) {
+        try {
+            stmt.setString(1, song.getName());
+            stmt.setDate(2, song.getCreated_at());
+            stmt.setString(3, song.getArtist());
+            stmt.setBytes(4, song.getFile());
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
 
+    private static Song songify(ResultSet rs) {
+        Song song = null;
+        try {
+
+            song = new Song(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getDate("created_at"),
+                rs.getString("artist"),
+                rs.getBytes("file")
+            );
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return song;
     }
