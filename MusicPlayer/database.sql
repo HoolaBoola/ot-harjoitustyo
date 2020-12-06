@@ -9,7 +9,8 @@ CREATE TABLE Songs
 CREATE TABLE Playlists
 (
     id      INTEGER PRIMARY KEY,
-    picture IMAGE
+    name    VARCHAR(255),
+    created_at DATETIME
 );
 CREATE TABLE SongPlaylist
 (

@@ -1,11 +1,53 @@
 package dao;
 
 import java.sql.Blob;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Playlist {
     private int id;
-    private Blob image;
+    private String name;
+    private Date created_at;
+
+    @Override
+    public String toString() {
+        return "Playlist{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", created_at=" + created_at +
+            '}';
+    }
+
+    public Playlist(String name, Date created_at) {
+        this.name = name;
+        this.created_at = created_at;
+    }
+
+    public Playlist(int id, String name, Date created_at) {
+        this.id = id;
+        this.name = name;
+        this.created_at = created_at;
+        this.songs = new ArrayList<>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Date getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(Date created_at) {
+        this.created_at = created_at;
+    }
+
+    //    private Blob image;
     private List<Song> songs;
 
     public int getId() {
@@ -16,13 +58,13 @@ public class Playlist {
         this.id = id;
     }
 
-    public Blob getImage() {
-        return image;
-    }
-
-    public void setImage(Blob image) {
-        this.image = image;
-    }
+//    public Blob getImage() {
+//        return image;
+//    }
+//
+//    public void setImage(Blob image) {
+//        this.image = image;
+//    }
 
     public List<Song> getSongs() {
         return songs;
@@ -32,9 +74,4 @@ public class Playlist {
         this.songs = songs;
     }
 
-    public Playlist(int id, Blob image, List<Song> songs) {
-        this.id = id;
-        this.image = image;
-        this.songs = songs;
-    }
 }

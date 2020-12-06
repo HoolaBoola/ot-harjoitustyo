@@ -71,6 +71,13 @@ public class Song {
 
     private List<Playlist> playlists;
 
+    public Song(String name, Date created_at, String artist, byte[] file) {
+        this.name = name;
+        this.created_at = created_at;
+        this.artist = artist;
+        this.file = file;
+    }
+
     public Song(int id, String name, Date created_at, String artist, byte[] file) {
         this.id = id;
         this.name = name;

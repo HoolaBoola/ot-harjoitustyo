@@ -45,6 +45,7 @@ public class SongDao implements Dao<Song, Integer> {
 
     @Override
     public Song read(Integer key) {
+        Song wanted = null;
         String sql = "SELECT * FROM Songs WHERE id == ?";
         try {
             var result = db.getConnection();
@@ -58,32 +59,34 @@ public class SongDao implements Dao<Song, Integer> {
             var rs = stmt.executeQuery();
             if (rs.next()) {
 
-                return songify(rs);
+                wanted = songify(rs);
             }
+
+            conn.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return wanted;
     }
 
     @Override
     public Song update(Song object) {
-        String sql = "UPDATE Songs"
-            + "SET name = ?, created_at = ?, artist = ?, file = ?"
-            + "WHERE id = ?";
+        String sql = "UPDATE Songs SET name = ?, created_at = ?, artist = ?, file = ? WHERE id = ?";
         try {
 
             var result = db.getConnection();
             if (result.isEmpty()) {
                 throw new SQLException();
             }
-            
+
             var conn = result.get();
             var stmt = conn.prepareStatement(sql);
             sqlify(stmt, object);
             stmt.setInt(5, object.getId());
+            stmt.executeUpdate();
+            conn.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -91,7 +94,26 @@ public class SongDao implements Dao<Song, Integer> {
     }
 
     @Override
-    public boolean delete(Integer key) throws SQLException {
+    public boolean delete(Integer key) {
+        String sql = "DELETE FROM Songs WHERE id = ?";
+
+        var result = db.getConnection();
+        try {
+            if (result.isEmpty()) {
+                throw new SQLException();
+            }
+
+            var conn = result.get();
+            var stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, key);
+
+            stmt.executeUpdate();
+
+            conn.close();
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         return false;
     }
 
@@ -112,6 +134,7 @@ public class SongDao implements Dao<Song, Integer> {
             while (rs.next()) {
                 songs.add(songify(rs));
             }
+            conn.close();
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
