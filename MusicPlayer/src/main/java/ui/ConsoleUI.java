@@ -5,6 +5,7 @@ import dao.PlaylistDao;
 import dao.Song;
 import dao.SongDao;
 import io.IO;
+import io.SongPlayer;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -17,14 +18,17 @@ public class ConsoleUI implements UI {
 //    private LineReader reader;
 //    private ParsedLine commandLine;
 
+    private final String separator = System.lineSeparator();
     private PlaylistDao playlistDao;
     private SongDao songDao;
     private IO io;
+    private SongPlayer player;
 
-    public ConsoleUI(IO input, PlaylistDao playlistDao, SongDao songDao) {
+    public ConsoleUI(IO input, PlaylistDao playlistDao, SongDao songDao, SongPlayer player) {
         this.playlistDao = playlistDao;
         this.songDao = songDao;
         io = input;
+        this.player = player;
 //        completer = new Completers.FilesCompleter(new File(System.getProperty("user.home")));
 //
 //        reader = LineReaderBuilder.builder().
@@ -37,17 +41,17 @@ public class ConsoleUI implements UI {
     @Override
     public void startApplication() {
 
-    var commands = listCommands();
-    var wrongEntered = false;
-        
+        var commands = listCommands();
+        var wrongEntered = false;
+
         while (true) {
             if (wrongEntered) {
-                io.print("Please enter a number!");
+                io.print("Please enter a number!" + separator);
                 wrongEntered = false;
             } else {
                 io.print(commands);
             }
-            
+
             var input = io.nextLine();
             int number;
             try {
@@ -56,33 +60,34 @@ public class ConsoleUI implements UI {
                 wrongEntered = true;
                 continue;
             }
-            
+
             if (number == 10) {
                 break;
             }
-            
+
             matchInput(number);
         }
 
 
     }
-    
+
     private String listCommands() {
-        String commands = "Commands (insert number):\n\n" +
-            "[1] play song\n" +
-            "[2] add song\n" +
-            "[3] list songs\n" +
-            "[4] edit song\n" +
-            "[5] add playlist\n" +
-            "[10] exit";
-        
+        String commands = "Commands (insert number):" + separator +
+            "[1] play song" + separator +
+            "[2] add song" + separator +
+            "[3] list songs" + separator +
+            "[4] edit song" + separator +
+            "[5] add playlist" + separator +
+            "[10] exit" + separator;
+
         return commands;
     }
 
-    public void matchInput(int command) {
+    private void matchInput(int command) {
 
         switch (command) {
             case 1:
+                playSong();
                 break;
             case 2:
                 addSong();
@@ -94,8 +99,14 @@ public class ConsoleUI implements UI {
             case 5:
                 addPlaylist();
                 break;
+            default:
+                io.print("Unknown command!" + separator);
         }
 
+    }
+    
+    private void playSong() {
+        
     }
 
     private void addSong() {
@@ -113,8 +124,8 @@ public class ConsoleUI implements UI {
             var song = new Song(name, new Date(System.currentTimeMillis()), artist, FileUtils.readFileToByteArray(file));
 
             songDao.create(song);
-            
-            io.print("\n\nSong created!\n\n");
+
+            io.print(separator + separator + "Song created!" + separator + separator);
         } catch (IOException e) {
             io.print("Something went wrong... Error message:");
             io.print(e.getMessage());
@@ -126,10 +137,10 @@ public class ConsoleUI implements UI {
         var name = io.nextLine();
 
         var playlist = new Playlist(name, new Date(System.currentTimeMillis()));
-        
+
         playlistDao.create(playlist);
 
-        io.print("\n\nPlaylist created!\n\n");
+        io.print(separator + separator + "Playlist created!" + separator + separator);
 
     }
 

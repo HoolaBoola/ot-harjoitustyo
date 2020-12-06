@@ -1,55 +1,50 @@
 package io;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 
-import javazoom.jl.player.Player;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.advanced.AdvancedPlayer;
+import javazoom.jl.player.advanced.PlaybackEvent;
+import javazoom.jl.player.advanced.PlaybackListener;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 
 public class SongPlayer {
-    
-    private Player player;
-    
-    public void close() {
-        if (player != null) player.close();
+
+    AdvancedPlayer player;
+
+    public SongPlayer() {
+
     }
 
-    // play the MP3 file to the sound card
-    public void playSong(File file) {
-        String filename = file.toString();
-        try {
-            FileInputStream fis = new FileInputStream(filename);
-            BufferedInputStream bis = new BufferedInputStream(fis);
-            player = new Player(bis);
-        } catch (Exception e) {
-            System.out.println("Problem playing file " + filename);
-            System.out.println(e);
-        }
+    private int pausedOnFrame = 0;
+    
+    public void playSong(byte[] file) throws JavaLayerException {
 
-        // run in new thread to play in background
+        pausedOnFrame = 0;
+        player = new AdvancedPlayer(new ByteArrayInputStream(file));
+        player.setPlayBackListener(new PlaybackListener() {
+            @Override
+            public void playbackFinished(PlaybackEvent event) {
+                pausedOnFrame = event.getFrame();
+            }
+        });
         new Thread() {
             public void run() {
                 try {
                     player.play();
-                    closePlayer();
-                } catch (Exception e) {
-                    System.out.println(e);
+                } catch (JavaLayerException e) {
+                    e.printStackTrace();
                 }
             }
         }.start();
     }
-    
-    public void closePlayer() {
-        player.close();
+
+    public void pauseSong() {
+        System.out.println(player);
+        if (player == null) {
+            return;
+        }
+
+        player.stop();
     }
-    
-    public boolean isComplete(){
-        return player.isComplete();
-    }
-    
-    public int getPosition() {
-        return player.getPosition();
-    }
-    
 }
