@@ -61,6 +61,9 @@ public class SongPlayer {
 
     public void playSong(byte[] file) throws JavaLayerException {
 
+        if (status.equals("PLAYING")) {
+            pauseSong();
+        }
         pausedOnFrame = 0;
         stream = new ByteArrayInputStream(file);
         continuePlaying();
