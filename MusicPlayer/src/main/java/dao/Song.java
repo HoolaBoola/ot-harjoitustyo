@@ -61,12 +61,11 @@ public class Song {
 
     @Override
     public String toString() {
-        return "Song{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", created_at=" + created_at +
-            ", artist='" + artist + '\'' +
-            '}';
+        return artist + " - " + name;
+    }
+
+    public String info() {
+        return artist + " - " + name + " (Created at: " + created_at + ")";
     }
 
     private List<Playlist> playlists;

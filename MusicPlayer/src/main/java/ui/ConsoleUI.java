@@ -11,12 +11,9 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.ListIterator;
 
 public class ConsoleUI implements UI {
-//
-//    private Completer completer;
-//    private LineReader reader;
-//    private ParsedLine commandLine;
 
     private final String separator = System.lineSeparator();
     private PlaylistDao playlistDao;
@@ -29,12 +26,6 @@ public class ConsoleUI implements UI {
         this.songDao = songDao;
         io = input;
         this.player = player;
-//        completer = new Completers.FilesCompleter(new File(System.getProperty("user.home")));
-//
-//        reader = LineReaderBuilder.builder().
-//            terminal(terminal)
-//            .completer(completer)
-//            .build();
 
     }
 
@@ -62,6 +53,7 @@ public class ConsoleUI implements UI {
             }
 
             if (number == 10) {
+                player.quit();
                 break;
             }
 
@@ -73,7 +65,8 @@ public class ConsoleUI implements UI {
 
     private String listCommands() {
         String commands = "Commands (insert number):" + separator +
-            "[1] play song" + separator +
+            "[0] play/pause menu" + separator +
+            "[1] choose song" + separator +
             "[2] add song" + separator +
             "[3] list songs" + separator +
             "[4] edit song" + separator +
@@ -86,6 +79,9 @@ public class ConsoleUI implements UI {
     private void matchInput(int command) {
 
         switch (command) {
+            case 0:
+                playPause();
+                break;
             case 1:
                 playSong();
                 break;
@@ -93,6 +89,7 @@ public class ConsoleUI implements UI {
                 addSong();
                 break;
             case 3:
+                listSongs();
                 break;
             case 4:
                 break;
@@ -104,11 +101,49 @@ public class ConsoleUI implements UI {
         }
 
     }
-    
+
     private void playSong() {
+        var songs = songDao.list();
+        ListIterator<Song> it = songs.listIterator();
+        
+        io.print(separator + "Choose song to play (enter number):" + separator);
+        
+        while(it.hasNext()) {
+            io.print("[" + it.nextIndex() + "] " + it.next());
+        }
+        
+        var input = io.nextLine();
+        
+        try {
+            int choice = Integer.parseInt(input);
+            Song song = songs.get(choice);
+            
+            player.playSong(song.getFile());
+        } catch (Exception e) {
+            io.print(separator + separator + "Choose a valid number!" + separator + separator);
+        }
         
     }
 
+
+
+    private void playPause() {
+        switch (player.getStatus()) {
+            case "PLAYING":
+                player.pauseSong();
+                break;
+            case "PAUSED":
+                player.continuePlaying();
+                break;
+        }
+    }
+    
+    private void listSongs() { 
+        io.print(separator + separator);
+        songDao.list().forEach(s -> io.print("\t" + s.info()));
+        io.print(separator + separator);
+    }
+    
     private void addSong() {
         io.print("Name of the song:");
         var name = io.nextLine();
@@ -128,7 +163,7 @@ public class ConsoleUI implements UI {
             io.print(separator + separator + "Song created!" + separator + separator);
         } catch (IOException e) {
             io.print("Something went wrong... Error message:");
-            io.print(e.getMessage());
+            io.print(e.getMessage() + separator);
         }
     }
 

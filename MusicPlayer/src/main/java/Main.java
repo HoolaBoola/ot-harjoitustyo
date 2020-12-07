@@ -22,16 +22,18 @@ public class Main {
         SongPlayer player = new SongPlayer();
 
 
-        try {
-            player.playSong(songs.read(1).getFile());
-            io.nextLine();
-            player.pauseSong();
-        } catch (JavaLayerException e) {
-            e.printStackTrace();
-        }
-//        var ui = new ConsoleUI(io, playlists, songs, player);
-//
-//        ui.startApplication();
+//        try {
+//            player.playSong(songs.read(1).getFile());
+//            io.nextLine();
+//            player.pauseSong();
+//        } catch (JavaLayerException e) {
+//            e.printStackTrace();
+//        }
+        var ui = new ConsoleUI(io, playlists, songs, player);
+
+        ui.startApplication();
+        
+        
 //        GraphicalUI ui = new GraphicalUI();
 //        ui.startApplication();
 //        try {

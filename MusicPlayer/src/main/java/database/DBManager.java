@@ -50,8 +50,8 @@ public class DBManager {
             }
 
             DatabaseMetaData meta = conn.getMetaData();
-            System.out.println(meta.getURL());
-            System.out.println(conn.isClosed());
+//            System.out.println(meta.getURL());
+//            System.out.println(conn.isClosed());
 
             return Optional.of(conn);
         } catch (SQLException e) {

@@ -13,3 +13,5 @@
 | 23.11. | 6    | |
 | 5.12. | 1     | |
 | 6.12. | 3     | Songs can be entered into and read from db |
+|       | 2     | Songs can be played, paused, and then crashed... |
+| 7.12. | 1     | Play/Pause works properly! |
