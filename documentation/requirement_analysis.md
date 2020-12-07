@@ -10,7 +10,7 @@ The application is a minimalistic music player that allows the user to load thei
     * The application will remember songs added to it, and allows the deletion and editing (name, artist...) of songs
 * Combine multiple songs into a playlist
     * Playlists will also have ways to edit and delete them
-    * Cover images for playlists
+    * Cover images for playlists (Will not happen...)
 * Browse added playlists and songs
 
 ## Simple database
