@@ -15,4 +15,5 @@
 | 6.12. | 3     | Songs can be entered into and read from db |
 |       | 2     | Songs can be played, paused, and then crashed... |
 | 7.12. | 1     | Play/Pause works properly! |
-| Total | 29 | |
+| 8.12. | 4     | Added tests and javadoc comments, functionality to generate docs and package |
+| Total | 33 | |
