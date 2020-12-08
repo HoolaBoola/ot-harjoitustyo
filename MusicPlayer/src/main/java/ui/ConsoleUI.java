@@ -61,7 +61,6 @@ public class ConsoleUI implements UI {
         }
 
         System.exit(0);
-
     }
 
     public String listCommands() {

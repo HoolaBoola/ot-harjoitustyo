@@ -17,7 +17,7 @@ public class SongPlayerTest {
     @Before
     public void setUp() throws Exception {
         player = new SongPlayer();
-        song = FileUtils.readFileToByteArray(new File("testing.mp3"));
+        song = FileUtils.readFileToByteArray(new File("src/main/resources/testing.mp3"));
     }
 
     @After
