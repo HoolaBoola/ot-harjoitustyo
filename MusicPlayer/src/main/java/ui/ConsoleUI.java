@@ -60,7 +60,7 @@ public class ConsoleUI implements UI {
             matchInput(number);
         }
 
-
+        System.exit(0);
     }
 
     public String listCommands() {
