@@ -30,7 +30,7 @@ public class DBManager {
 
     /**
      * calls getConnection(url)
-     * @return Option<Connection>
+     * @return Optional containing a Connection, or empty if an error occurred
      */
     public Optional<Connection> getConnection() {
         return getConnection("jdbc:sqlite:" + path);
@@ -104,7 +104,7 @@ public class DBManager {
                     } catch (SQLException e) {
                         // table already exists
                     }
-                    System.out.println(" >>" + inst[i]);
+//                    System.out.println(" >>" + inst[i]);
                 }
             }
 

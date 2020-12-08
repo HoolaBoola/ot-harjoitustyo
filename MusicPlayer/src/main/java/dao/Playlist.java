@@ -1,6 +1,5 @@
 package dao;
 
-import java.sql.Blob;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +46,7 @@ public class Playlist {
         this.created_at = created_at;
     }
 
-    //    private Blob image;
-    private List<Song> songs;
+    private List<Song> songs = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -57,14 +55,6 @@ public class Playlist {
     public void setId(int id) {
         this.id = id;
     }
-
-//    public Blob getImage() {
-//        return image;
-//    }
-//
-//    public void setImage(Blob image) {
-//        this.image = image;
-//    }
 
     public List<Song> getSongs() {
         return songs;

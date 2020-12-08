@@ -73,6 +73,10 @@ public class SongDao implements Dao<Song, Integer> {
 
     @Override
     public Song update(Song object) {
+        if (object.getId() == 0) {
+            return null;
+        }
+        
         String sql = "UPDATE Songs SET name = ?, created_at = ?, artist = ?, file = ? WHERE id = ?";
         try {
 
