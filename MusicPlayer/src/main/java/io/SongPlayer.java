@@ -14,10 +14,7 @@ public class SongPlayer {
     private AdvancedPlayer player;
     private String status = "NOT PLAYING";
     private InputStream stream;
-
-    public SongPlayer() {
-
-    }
+    
 
     private int pausedOnFrame = 0;
 
@@ -26,8 +23,10 @@ public class SongPlayer {
         return status;
     }
 
+    /**
+     *  continue playing a song
+     */
     public void continuePlaying() {
-//        System.out.println(status);
 
         try {
             player = new AdvancedPlayer(stream);
@@ -51,7 +50,6 @@ public class SongPlayer {
         new Thread(() -> {
             try {
                 player.play();
-//                System.out.println(status);
             } catch (JavaLayerException e) {
                 e.printStackTrace();
             }
@@ -59,6 +57,10 @@ public class SongPlayer {
 
     }
 
+    /**
+     * set the player to play a song
+     * @param file a byte array containing the song
+     */
     public void playSong(byte[] file) {
 
         if (status.equals("PLAYING")) {
@@ -70,6 +72,9 @@ public class SongPlayer {
 
     }
 
+    /**
+     * pause the player
+     */
     public void pauseSong() {
         if (player == null) {
             return;
@@ -80,6 +85,9 @@ public class SongPlayer {
 
     }
 
+    /**
+     * stop the player so that the concurrent thread is stopped
+     */
     public void quit() {
         if (player == null) {
             return;

@@ -17,6 +17,11 @@ public class SongDao implements Dao<Song, Integer> {
     }
 
 
+    /**
+     * Insert a new song into the database
+     * @param object a Song object
+     * @return true, if creation was successful. Otherwise, returns false
+     */
     @Override
     public boolean create(Song object) {
         String sql = "INSERT INTO Songs (name, created_at, artist, file) VALUES (?,?,?,?)";
@@ -43,6 +48,11 @@ public class SongDao implements Dao<Song, Integer> {
         return false;
     }
 
+    /**
+     * Get a song from the database
+     * @param key the id of the wanted song
+     * @return the song, if it exists. Otherwise, returns null
+     */
     @Override
     public Song read(Integer key) {
         Song wanted = null;
@@ -71,9 +81,15 @@ public class SongDao implements Dao<Song, Integer> {
         return wanted;
     }
 
+
+    /**
+     * Update a song in the database
+     * @param object a Song object that has its id as a non-zero integer
+     * @return the updated Song, if id is specified and exists. Otherwise, returns null
+     */
     @Override
     public Song update(Song object) {
-        if (object.getId() == 0) {
+        if (object.getId() <= 0) {
             return null;
         }
         
@@ -97,6 +113,11 @@ public class SongDao implements Dao<Song, Integer> {
         return read(object.getId());
     }
 
+    /**
+     * Delete a song from the database
+     * @param key the id of the song
+     * @return true, if the deletion was succesful. Otherwise, returns false (song doesn't exists, an error happened...)
+     */
     @Override
     public boolean delete(Integer key) {
         String sql = "DELETE FROM Songs WHERE id = ?";
@@ -121,6 +142,10 @@ public class SongDao implements Dao<Song, Integer> {
         return false;
     }
 
+    /**
+     * Get a list of all the songs in the database
+     * @return a List of Songs
+     */
     @Override
     public List<Song> list() {
         ArrayList<Song> songs = new ArrayList<>();
@@ -147,6 +172,11 @@ public class SongDao implements Dao<Song, Integer> {
         return songs;
     }
 
+    /**
+     * Set a song's attributes to a PreparedStatement
+     * @param stmt PreparedStatement to be executed
+     * @param song Song that is to be sqlified
+     */
     public static void sqlify(PreparedStatement stmt, Song song) {
         try {
             stmt.setString(1, song.getName());
@@ -158,6 +188,11 @@ public class SongDao implements Dao<Song, Integer> {
         }
     }
 
+    /**
+     * Extract a Song object from a ResultSet
+     * @param rs ResultSet containing values for each of Song's variables
+     * @return the extracted Song, if succesful. Otherwise, null
+     */
     public static Song songify(ResultSet rs) {
         Song song = null;
         try {

@@ -25,7 +25,7 @@ public class DBManager {
         }
 //        connect("jdbc:sqlite:" + path);
         boolean dbCreated = createDB();
-        System.out.println("Database created: " + dbCreated);
+        System.err.println("Database created: " + dbCreated);
     }
 
     /**

@@ -23,7 +23,7 @@ public class DBManagerTest {
         baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
         
-        System.setOut(ps);
+        System.setErr(ps);
 
         db = new DBManager(path);
     }
