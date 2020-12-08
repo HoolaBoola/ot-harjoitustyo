@@ -1,8 +1,6 @@
 package database;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.sql.*;
 import java.util.Optional;
 
@@ -30,14 +28,15 @@ public class DBManager {
 
     /**
      * calls getConnection(url)
+     *
      * @return Optional containing a Connection, or empty if an error occurred
      */
     public Optional<Connection> getConnection() {
         return getConnection("jdbc:sqlite:" + path);
     }
-    
+
     /**
-     *  method that creates a connection to a database and returns it.
+     * method that creates a connection to a database and returns it.
      *
      * @param url Path to the correct location prefixed with the correct JDBC driver information
      * @return Optional containing either empty or java.sql.Connection
@@ -59,7 +58,7 @@ public class DBManager {
         }
         return Optional.empty();
     }
-    
+
 
     private boolean createDB() {
         File f = new File(path);
@@ -73,22 +72,19 @@ public class DBManager {
         }
 
         Connection conn = result.get();
-        insertStuffs(conn, "src/main/resources/database.sql");
+        insertStuffs(conn);
 
         return true;
     }
 
-    private void insertStuffs(Connection conn, String sqlPath) {
-        String s = new String();
-        StringBuffer sb = new StringBuffer();
+    private void insertStuffs(Connection conn) {
+
 
         try {
-            FileReader fr = new FileReader(new File(sqlPath));
-
-            BufferedReader br = new BufferedReader(fr);
-
-            while ((s = br.readLine()) != null) {
-                sb.append(s);
+            BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/database.sql")));
+            StringBuffer sb = new StringBuffer();
+            while (br.ready()) {
+                sb.append(br.readLine());
             }
             br.close();
 
@@ -112,5 +108,4 @@ public class DBManager {
             e.printStackTrace();
         }
     }
-
 }
