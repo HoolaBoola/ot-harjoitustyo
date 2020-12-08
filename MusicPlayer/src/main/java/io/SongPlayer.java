@@ -17,7 +17,18 @@ public class SongPlayer {
     private AdvancedPlayer player;
     private String status = "NOT PLAYING";
     private InputStream stream;
+    private Thread thread;
     
+    public SongPlayer() {
+        thread = new Thread(() -> {
+            try {
+                player.play();
+            } catch (JavaLayerException e) {
+                e.printStackTrace();
+            }
+        });
+        
+    }
 
     private int pausedOnFrame = 0;
 
@@ -50,13 +61,7 @@ public class SongPlayer {
         } catch (JavaLayerException e) {
             e.printStackTrace();
         }
-        new Thread(() -> {
-            try {
-                player.play();
-            } catch (JavaLayerException e) {
-                e.printStackTrace();
-            }
-        }).start();
+       thread.start();
 
     }
 
@@ -96,6 +101,7 @@ public class SongPlayer {
             return;
         }
         status = "STOPPED";
+        thread.interrupt();
         player.close();
     }
 }

@@ -75,7 +75,7 @@ public class DBManager {
         }
 
         Connection conn = result.get();
-        insertStuffs(conn, "database.sql");
+        insertStuffs(conn, "src/main/resources/database.sql");
 
         return true;
     }
