@@ -9,6 +9,9 @@ import javazoom.jl.player.advanced.PlaybackListener;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+/**
+ * Play songs using javazoom AdvancedPlayer
+ */
 public class SongPlayer {
 
     private AdvancedPlayer player;

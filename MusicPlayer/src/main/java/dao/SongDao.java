@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles reading and inserting Songs to and from the database
+ */
 public class SongDao implements Dao<Song, Integer> {
 
     private DBManager db;

@@ -2,6 +2,9 @@ package io;
 
 import java.util.Scanner;
 
+/**
+ * IO class to use in Console user interface
+ */
 public class ConsoleIO implements IO{
     
     private Scanner reader;

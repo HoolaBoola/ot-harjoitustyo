@@ -6,7 +6,9 @@ import java.io.FileReader;
 import java.sql.*;
 import java.util.Optional;
 
-
+/**
+ * Class to form connections to database and create tables
+ */
 public class DBManager {
 
     private String path;
