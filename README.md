@@ -43,48 +43,17 @@ Komento
 
 `mvn package`
 
-generoi hakemistoon target suoritettavan jar-tiedoston MusicPlayer.jar
+generoi hakemistoon target suoritettavan jar-tiedoston MusicPlayer-1.0-SNAPSHOT.jar
 
 
-Javan ja Mavenin asennusohjeita Macille Homebrew'n kautta
---------
+# Ohjelman käynnistäminen
 
-Homebrew on Linuxin pakettimanagereita vastaava pakettimanageri MacOS-käyttöjärjestelmälle. Nämä ohjeet toimivat ainakin MacOS:n versiolle 10.15. Asennusohjeet Homebrew'lle.
+Ohjelman voi käynnistää joko syöttämällä projektin lähdekansion juuressa komennon
 
-# Javan asennus
+`mvn compile exec:java`
 
-Homebrew'n asennuksen jälkeen Javan saa asennettua Macille yksinkertaisesti esimerkiksi komennolla
+tai halutessaan voi käynnistää generoidun JAR-tiedoston komennolla
 
-`brew install adoptopenjdk`
+`java -jar polku/tiedostoon/MusicPlayer-1.0-SNAPSHOT.jar`
 
-# Mavenin asennus ja paluu Javan versioon 11
-
-Mavenin saa asennettua komennolla
-
-`brew install maven`
-
-Tällöin Mavenin oletuksena käyttämä Java-versio on Java 15. Java-versioon 11 päästään asentamalla Java 11 komennolla
-
-`brew install java11`
-
-Lisäksi täytyy osoittaa Mavenille Javan versio 11. Mavenin versiolla 3.6.3_1 tämä tapahtuu muokkaamalla tiedostoa: /usr/local/Cellar/maven/3.6.3_1/bin/mvn esim. nanolla komennolla
-
-`sudo nano /usr/local/Cellar/maven/3.6.3_1/bin/mvn`
-
-HUOM Muista tarkistaa mikä versio Mavenista asentui ja muokkaa tiedostopolkuun oikea versio version 3.6.3_1 tilalle
-
-Muokkaa rivi
-
-`JAVA_HOME="${JAVA_HOME:-/usr/local/opt/openjdk/libexec/openjdk.jdk/Contents/Home}" exec "/usr/local/Cellar/maven/`
-
-Muotoon
-
-`JAVA_HOME="${JAVA_HOME:-/usr/local/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home}" exec "/usr/local/Cellar/maven/`
-
-Eli muokkaa polkuun openjdk `openjdk@11` ja tallenna tiedosto. Nyt voit tarkistaa komennolla `mvn --version`, että Maven käyttää Javan versiota 11.
-
-Käyttöjärjestelmän Java version vaihtaminen onnistuu esimerkiksi lisäämällä tiedoston: `~/.zshrc` (vanhemmilla MacOS-käyttöjärjestelmillä `~/.bashrc`) loppuun rivi
-
-`export JAVA_HOME=/usr/local/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home/`
-
-Muista käynnistää lisäyksen jälkeen terminaali uudestaan, jolloin komento `java --version` näyttää versioksi 11.
+Ensimmäisellä käynnistyskerralla ohjelma alustaa kansioon `player.db`-tiedoston
