@@ -15,11 +15,11 @@ import java.util.ListIterator;
 
 public class ConsoleUI implements UI {
 
-    private final String separator = System.lineSeparator();
-    private PlaylistDao playlistDao;
-    private SongDao songDao;
-    private IO io;
-    private SongPlayer player;
+    public final String separator = System.lineSeparator();
+    public PlaylistDao playlistDao;
+    public SongDao songDao;
+    public IO io;
+    public SongPlayer player;
 
     public ConsoleUI(IO input, PlaylistDao playlistDao, SongDao songDao, SongPlayer player) {
         this.playlistDao = playlistDao;
@@ -63,7 +63,7 @@ public class ConsoleUI implements UI {
 
     }
 
-    private String listCommands() {
+    public String listCommands() {
         String commands = "Commands (insert number):" + separator +
             "[0] play/pause menu" + separator +
             "[1] choose song" + separator +
@@ -76,7 +76,7 @@ public class ConsoleUI implements UI {
         return commands;
     }
 
-    private void matchInput(int command) {
+    public void matchInput(int command) {
 
         switch (command) {
             case 0:
@@ -102,7 +102,7 @@ public class ConsoleUI implements UI {
 
     }
 
-    private void playSong() {
+    public void playSong() {
         var songs = songDao.list();
         ListIterator<Song> it = songs.listIterator();
         
@@ -127,7 +127,7 @@ public class ConsoleUI implements UI {
 
 
 
-    private void playPause() {
+    public void playPause() {
         switch (player.getStatus()) {
             case "PLAYING":
                 player.pauseSong();
@@ -138,13 +138,13 @@ public class ConsoleUI implements UI {
         }
     }
     
-    private void listSongs() { 
+    public void listSongs() { 
         io.print(separator + separator);
         songDao.list().forEach(s -> io.print("\t" + s.info()));
         io.print(separator + separator);
     }
     
-    private void addSong() {
+    public void addSong() {
         io.print("Name of the song:");
         var name = io.nextLine();
 
@@ -167,7 +167,7 @@ public class ConsoleUI implements UI {
         }
     }
 
-    private void addPlaylist() {
+    public void addPlaylist() {
         io.print("Name of the playlist:");
         var name = io.nextLine();
 
