@@ -3,12 +3,7 @@ import dao.SongDao;
 import database.DBManager;
 import io.ConsoleIO;
 import io.SongPlayer;
-import javazoom.jl.decoder.JavaLayerException;
 import ui.ConsoleUI;
-
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
 import java.util.Scanner;
 
 

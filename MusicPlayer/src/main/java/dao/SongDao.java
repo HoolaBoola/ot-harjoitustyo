@@ -143,7 +143,7 @@ public class SongDao implements Dao<Song, Integer> {
         return songs;
     }
 
-    private static void sqlify(PreparedStatement stmt, Song song) {
+    public static void sqlify(PreparedStatement stmt, Song song) {
         try {
             stmt.setString(1, song.getName());
             stmt.setDate(2, song.getCreated_at());
@@ -154,7 +154,7 @@ public class SongDao implements Dao<Song, Integer> {
         }
     }
 
-    private static Song songify(ResultSet rs) {
+    public static Song songify(ResultSet rs) {
         Song song = null;
         try {
 
