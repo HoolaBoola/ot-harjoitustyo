@@ -18,7 +18,7 @@ Testausdokumentti (ei valmis)
 Releaset
 ----------
 
-[Viikko 6](releases/tag/viikko6)
+[Viikko 6](https://github.com/HoolaBoola/ot-harjoitustyo/releases/tag/viikko6)
 
 Komentorivikomennot
 ----------
