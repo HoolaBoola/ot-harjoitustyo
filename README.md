@@ -18,7 +18,7 @@ Testausdokumentti (ei valmis)
 Releaset
 ----------
 
-Ei vielä releaseja
+[Viikko 6](releases/tag/viikko6)
 
 Komentorivikomennot
 ----------
@@ -34,6 +34,8 @@ Testikattavuusraportti luodaan komennolla
 `mvn jacoco:report`
 
 Kattavuusraporttia voi tarkastella avaamalla selaimella tiedosto target/site/jacoco/index.html
+
+GitHubin Actioneissa tapahtuva testaus ei tällä hetkellä mene läpi, sillä SongPlayerTest vaatii musiikin soittoon sellaisia resursseja, joita ilmeisesti palvelimella ei ole.
 
 # Suoritettavan jarin generointi
 
