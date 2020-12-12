@@ -11,6 +11,9 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ListIterator;
 
 public class ConsoleUI implements UI {
@@ -64,17 +67,29 @@ public class ConsoleUI implements UI {
     }
 
     public String listCommands() {
-        String commands = "Commands (insert number):" + separator +
-            "[0] play/pause menu" + separator +
-            "[1] choose song" + separator +
-            "[2] add song" + separator +
-            "[3] list songs" + separator +
-            "[4] edit song" + separator +
-            "[5] add playlist" + separator +
-            "[10] exit" + separator;
+
+        String commands = String.join(separator + "\t", commandsList);
 
         return commands;
     }
+
+    List<String> commandsList = new ArrayList<>(
+        Arrays.asList(
+            new String[]{
+                "Commands (insert number):",
+                "[0] play/pause menu",
+                "[1] choose song",
+                "[2] add song",
+                "[3] list songs",
+                "[4] edit song",
+                "[5] delete song",
+                "[6] add playlist",
+                "[7] list playlists",
+                "[8] edit playlist",
+                "[9] delete playlist",
+                "[10] exit"}
+        )
+    );
 
     public void matchInput(int command) {
 
@@ -92,9 +107,22 @@ public class ConsoleUI implements UI {
                 listSongs();
                 break;
             case 4:
+                editSongs();
                 break;
             case 5:
+                deleteSongs();
+                break;
+            case 6:
                 addPlaylist();
+                break;
+            case 7:
+                listPlaylists();
+                break;
+            case 8:
+                editPlaylist();
+                break;
+            case 9:
+                deletePlaylist();
                 break;
             default:
                 io.print("Unknown command!" + separator);
@@ -102,30 +130,101 @@ public class ConsoleUI implements UI {
 
     }
 
-    public void playSong() {
-        var songs = songDao.list();
-        ListIterator<Song> it = songs.listIterator();
-        
-        io.print(separator + "Choose song to play (enter number):" + separator);
-        
-        while(it.hasNext()) {
-            io.print("[" + it.nextIndex() + "] " + it.next());
-        }
-        
+    public void listPlaylists() {
+    }
+
+    public void deletePlaylist() {
+    }
+
+    public void editPlaylist() {
+    }
+
+    public void deleteSongs() {
+    }
+
+    public void editSongs() {
+        var songs = enumerateSongs();
+
         var input = io.nextLine();
-        
+        Song song;
+        try {
+            int choice = Integer.parseInt(input);
+            song = songs.get(choice);
+        } catch (Exception e) {
+            io.print(separator + separator + "Choose a valid number!" + separator + separator);
+            return;
+        }
+
+        editSong(song);
+    }
+
+    public void editSong(Song song) {
+        boolean somethingChanged = false;
+
+        io.print(separator + "Enter new name: (empty skips)" + separator);
+        String name = io.nextLine();
+
+        if (!name.isBlank()) {
+            song.setName(name);
+            somethingChanged = true;
+        }
+
+        io.print(separator + "Enter new artist: (empty skips)" + separator);
+        String artist = io.nextLine();
+
+        if (!artist.isBlank()) {
+            song.setArtist(artist);
+            somethingChanged = true;
+        }
+
+        io.print(separator + "Enter path to new file: (empty skips)" + separator);
+        String path = io.nextLine();
+
+        if (!path.isBlank()) {
+            File file = new File(path);
+            try {
+                somethingChanged = true;
+                song.setFile(FileUtils.readFileToByteArray(file));
+
+
+            } catch (IOException e) {
+                io.print("Something went wrong... Error message:");
+                io.print(e.getMessage() + separator);
+            }
+        }
+        songDao.update(song);
+        io.print(separator + separator + (somethingChanged ? "Song updated!" : "Nothing changed.") + separator + separator);
+    }
+
+
+    public void playSong() {
+        var songs = enumerateSongs();
+
+        var input = io.nextLine();
+
         try {
             int choice = Integer.parseInt(input);
             Song song = songs.get(choice);
-            
+
             player.playSong(song.getFile());
         } catch (Exception e) {
             io.print(separator + separator + "Choose a valid number!" + separator + separator);
         }
-        
+
     }
 
+    private List<Song> enumerateSongs() {
+        var songs = songDao.list();
+        ListIterator<Song> it = songs.listIterator();
 
+        io.print(separator + "Choose song to play (enter number):" + separator);
+
+        while (it.hasNext()) {
+            io.print("[" + it.nextIndex() + "] " + it.next());
+        }
+
+        return songs;
+    }
 
     public void playPause() {
         switch (player.getStatus()) {
@@ -137,13 +236,13 @@ public class ConsoleUI implements UI {
                 break;
         }
     }
-    
-    public void listSongs() { 
+
+    public void listSongs() {
         io.print(separator + separator);
         songDao.list().forEach(s -> io.print("\t" + s.info()));
         io.print(separator + separator);
     }
-    
+
     public void addSong() {
         io.print("Name of the song:");
         var name = io.nextLine();
