@@ -17,6 +17,10 @@ public class Playlist {
             ", created_at=" + created_at +
             '}';
     }
+    
+    public String info() {
+        return name + " (Created: " + created_at + ")";
+    }
 
     public Playlist(String name, Date created_at) {
         this.name = name;

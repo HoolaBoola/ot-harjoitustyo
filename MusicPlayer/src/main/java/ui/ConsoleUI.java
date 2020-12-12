@@ -131,6 +131,9 @@ public class ConsoleUI implements UI {
     }
 
     public void listPlaylists() {
+        io.print(separator + separator);
+        playlistDao.list().forEach(l -> io.print("\t" + l.info()));
+        io.print(separator + separator);
     }
 
     public void deletePlaylist() {
@@ -140,6 +143,26 @@ public class ConsoleUI implements UI {
     }
 
     public void deleteSongs() {
+        var songs = enumerateSongs();
+
+        var input = io.nextLine();
+        Song song;
+        try {
+            int choice = Integer.parseInt(input);
+            song = songs.get(choice);
+        } catch (Exception e) {
+            io.print(separator + separator + "Choose a valid number!" + separator + separator);
+            return;
+        }
+
+        io.print(separator + separator + "Are you sure you want to delete song \"" + song.getName() + "\"? [y/n]" + separator + separator);
+
+        if (io.nextLine().toLowerCase().strip().equals("y")) {
+            songDao.delete(song.getId());
+            io.print(separator + separator + "Song deleted successfully!" + separator + separator);
+        } else {
+            io.print(separator + separator + "Song deletion canceled." + separator + separator);
+        }
     }
 
     public void editSongs() {
@@ -217,7 +240,7 @@ public class ConsoleUI implements UI {
         var songs = songDao.list();
         ListIterator<Song> it = songs.listIterator();
 
-        io.print(separator + "Choose song to play (enter number):" + separator);
+        io.print(separator + "Choose song (enter number):" + separator);
 
         while (it.hasNext()) {
             io.print("[" + it.nextIndex() + "] " + it.next());
@@ -239,7 +262,12 @@ public class ConsoleUI implements UI {
 
     public void listSongs() {
         io.print(separator + separator);
-        songDao.list().forEach(s -> io.print("\t" + s.info()));
+        var list = songDao.list();
+        if (list.isEmpty()) {
+            io.print("\tNo songs added to database");
+        } else {
+            list.forEach(s -> io.print("\t" + s.info()));
+        }
         io.print(separator + separator);
     }
 

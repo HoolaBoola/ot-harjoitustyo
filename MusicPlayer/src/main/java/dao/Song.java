@@ -66,7 +66,7 @@ public class Song {
     }
 
     public String info() {
-        return artist + " - " + name + " (Created at: " + created_at + ")";
+        return artist + " - " + name + " (Created: " + created_at + ")";
     }
 
     private List<Playlist> playlists = new ArrayList<>();

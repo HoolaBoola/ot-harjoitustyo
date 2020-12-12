@@ -17,4 +17,5 @@
 | 7.12. | 1     | Play/Pause works properly! |
 | 8.12. | 4     | Created lots of tests and javadoc comments|
 |       | 1     | Hunted annoying bugs |
+| 12.12. | 2    | Song info editing |
 | Total | 34 | |
