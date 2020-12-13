@@ -41,6 +41,35 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
         }
         return true;
     }
+    
+    public List<Song> getSongsFromPlaylist(Playlist playlist) {
+        String sql = "SELECT Songs.* FROM Songs " +
+            " JOIN SongPlaylist ON id = song_id " +
+            " WHERE playlist_id = ?";
+        
+        List<Song> songs = new ArrayList<>();
+
+        try {
+            var result = db.getConnection();
+
+            if (result.isEmpty()) {
+                throw new SQLException();
+            }
+            var conn = result.get();
+            var stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, playlist.getId());
+            var rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                songs.add(SongDao.songify(rs));
+            }
+            conn.close();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return songs;
+    }
 
     @Override
     public Playlist read(Integer key) {
@@ -66,6 +95,8 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        
+        wanted.setSongs(getSongsFromPlaylist(wanted));
 
         return wanted;
     }
@@ -95,7 +126,7 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
     }
 
     @Override
-    public boolean delete(Integer key) {
+    public boolean delete(Playlist playlist) {
         String sql = "DELETE FROM Playlists WHERE id = ?";
 
         var result = db.getConnection();
@@ -106,7 +137,31 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
 
             var conn = result.get();
             var stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, key);
+            stmt.setInt(1, playlist.getId());
+
+            stmt.executeUpdate();
+
+            conn.close();
+            deleteAllSongsFromPlaylist(playlist);
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;    
+    }
+    
+    public boolean deleteAllSongsFromPlaylist(Playlist playlist) {
+        String sql = "DELETE FROM SongPlaylist WHERE playlist_id = ?";
+
+        var result = db.getConnection();
+        try {
+            if (result.isEmpty()) {
+                throw new SQLException();
+            }
+
+            var conn = result.get();
+            var stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, playlist.getId());
 
             stmt.executeUpdate();
 
@@ -115,7 +170,7 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return false;    
+        return false;
     }
 
     @Override
@@ -133,7 +188,9 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
             var rs = stmt.executeQuery();
 
             while (rs.next()) {
-                playlists.add(songify(rs));
+                Playlist playlist = songify(rs);
+                playlist.setSongs(getSongsFromPlaylist(playlist));
+                playlists.add(playlist);
             }
             conn.close();
 

@@ -84,7 +84,7 @@ public class SongDaoTest {
     public void delete() {
         dao.create(song);
         
-        dao.delete(song.getId());
+        dao.delete(song);
         
         Song s = dao.read(song.getId());
         

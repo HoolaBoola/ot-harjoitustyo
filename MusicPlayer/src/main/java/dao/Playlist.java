@@ -8,18 +8,15 @@ public class Playlist {
     private int id;
     private String name;
     private Date created_at;
+    private List<Song> songs = new ArrayList<>();
 
     @Override
     public String toString() {
-        return "Playlist{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", created_at=" + created_at +
-            '}';
+        return name + " - " + songs.size() + " songs";
     }
     
     public String info() {
-        return name + " (Created: " + created_at + ")";
+        return name + " - " + songs.size() + " songs  (Created: " + created_at + ")";
     }
 
     public Playlist(String name, Date created_at) {
@@ -50,7 +47,6 @@ public class Playlist {
         this.created_at = created_at;
     }
 
-    private List<Song> songs = new ArrayList<>();
 
     public int getId() {
         return id;

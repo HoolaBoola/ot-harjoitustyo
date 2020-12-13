@@ -35,7 +35,7 @@ public class ConsoleUI implements UI {
     @Override
     public void startApplication() {
 
-        var commands = listCommands();
+        var commands = listCommands(commandsList);
         var wrongEntered = false;
 
         while (true) {
@@ -66,7 +66,7 @@ public class ConsoleUI implements UI {
         System.exit(0);
     }
 
-    public String listCommands() {
+    public String listCommands(List<String> commandsList) {
 
         String commands = String.join(separator + "\t", commandsList);
 
@@ -107,10 +107,10 @@ public class ConsoleUI implements UI {
                 listSongs();
                 break;
             case 4:
-                editSongs();
+                editSong();
                 break;
             case 5:
-                deleteSongs();
+                deleteSong();
                 break;
             case 6:
                 addPlaylist();
@@ -130,20 +130,97 @@ public class ConsoleUI implements UI {
 
     }
 
+    public void addPlaylist() {
+        io.print("Name of the playlist:");
+        var name = io.nextLine();
+
+        var playlist = new Playlist(name, new Date(System.currentTimeMillis()));
+
+        playlistDao.create(playlist);
+
+        io.print(separator + separator + "Playlist created!" + separator + separator);
+
+    }
+
     public void listPlaylists() {
         io.print(separator + separator);
-        playlistDao.list().forEach(l -> io.print("\t" + l.info()));
+        var list = playlistDao.list();
+        if (list.isEmpty()) {
+            io.print("\tNo playlists added to database");
+        } else {
+            list.forEach(s -> io.print("\t" + s.info()));
+        }
         io.print(separator + separator);
     }
 
     public void deletePlaylist() {
+        var playlists = enumeratePlaylists();
+
+        if (playlists.isEmpty()) {
+            return;
+        }
+
+        var input = io.nextLine();
+        Playlist playlist;
+        try {
+            int choice = Integer.parseInt(input);
+            playlist = playlists.get(choice);
+        } catch (Exception e) {
+            io.print(separator + separator + "Choose a valid number!" + separator + separator);
+            return;
+        }
+
+        io.print(separator + separator + "Are you sure you want to delete playlist \"" + playlist.getName() + "\"? [y/n]" + separator + separator);
+
+        if (io.nextLine().toLowerCase().strip().equals("y")) {
+            playlistDao.delete(playlist);
+            io.print(separator + separator + "Playlist deleted successfully!" + separator + separator);
+        } else {
+            io.print(separator + separator + "Playlist deletion canceled." + separator + separator);
+        }
     }
 
     public void editPlaylist() {
+        var playlists = enumeratePlaylists();
+
+        if (playlists.isEmpty()) {
+            return;
+        }
+
+        var input = io.nextLine();
+        Playlist playlist;
+        try {
+            int choice = Integer.parseInt(input);
+            playlist = playlists.get(choice);
+        } catch (Exception e) {
+            io.print(separator + separator + "Choose a valid number!" + separator + separator);
+            return;
+        }
+
+        editPlaylist(playlist);
     }
 
-    public void deleteSongs() {
+    public void editPlaylist(Playlist playlist) {
+        boolean somethingChanged = false;
+
+        io.print(separator + "Enter new name: (empty skips)" + separator);
+        String name = io.nextLine();
+
+        if (!name.isBlank()) {
+            playlist.setName(name);
+            somethingChanged = true;
+        }
+
+        playlistDao.update(playlist);
+        io.print(separator + separator + (somethingChanged ? "Playlist updated!" : "Nothing changed.") + separator + separator);
+    }
+
+    public void deleteSong() {
         var songs = enumerateSongs();
+
+        if (songs.isEmpty()) {
+            return;
+        }
 
         var input = io.nextLine();
         Song song;
@@ -158,15 +235,19 @@ public class ConsoleUI implements UI {
         io.print(separator + separator + "Are you sure you want to delete song \"" + song.getName() + "\"? [y/n]" + separator + separator);
 
         if (io.nextLine().toLowerCase().strip().equals("y")) {
-            songDao.delete(song.getId());
+            songDao.delete(song);
             io.print(separator + separator + "Song deleted successfully!" + separator + separator);
         } else {
             io.print(separator + separator + "Song deletion canceled." + separator + separator);
         }
     }
 
-    public void editSongs() {
+    public void editSong() {
         var songs = enumerateSongs();
+
+        if (songs.isEmpty()) {
+            return;
+        }
 
         var input = io.nextLine();
         Song song;
@@ -178,7 +259,62 @@ public class ConsoleUI implements UI {
             return;
         }
 
-        editSong(song);
+        io.print(separator + "What to do with the song?");
+        io.print(listCommands(songEditCommandsList));
+
+        input = io.nextLine();
+        try {
+            int choice = Integer.parseInt(input);
+            matchSongEditInput(choice, song);
+        } catch (Exception e) {
+            io.print(separator + separator + "Choose a valid number!" + separator + separator);
+        }
+    }
+
+    List<String> songEditCommandsList = new ArrayList<>(
+        Arrays.asList(
+            new String[]{
+                "Commands:",
+                "[1] Edit song",
+                "[2] Add song to playlist",
+            }
+        )
+    );
+
+    public void matchSongEditInput(int command, Song song) {
+        switch (command) {
+            case 1:
+                editSong(song);
+                break;
+            case 2:
+                addSongToPlaylist(song);
+                break;
+            default:
+                io.print(separator + "No such command!" + separator);
+        }
+    }
+
+    public void addSongToPlaylist(Song song) {
+        var playlists = enumeratePlaylists();
+
+        if (playlists.isEmpty()) {
+            return;
+        }
+
+        var input = io.nextLine();
+        Playlist playlist;
+        try {
+            int choice = Integer.parseInt(input);
+            playlist = playlists.get(choice);
+        } catch (Exception e) {
+            io.print(separator + separator + "Choose a valid number!" + separator + separator);
+            return;
+        }
+
+        songDao.addSongToPlaylist(song, playlist);
+
+        io.print(separator + separator + "Song added to playlist!" + separator + separator);
+
     }
 
     public void editSong(Song song) {
@@ -219,9 +355,12 @@ public class ConsoleUI implements UI {
         io.print(separator + separator + (somethingChanged ? "Song updated!" : "Nothing changed.") + separator + separator);
     }
 
-
     public void playSong() {
         var songs = enumerateSongs();
+
+        if (songs.isEmpty()) {
+            return;
+        }
 
         var input = io.nextLine();
 
@@ -236,17 +375,38 @@ public class ConsoleUI implements UI {
 
     }
 
-    private List<Song> enumerateSongs() {
+    public List<Song> enumerateSongs() {
         var songs = songDao.list();
+        if (songs.isEmpty()) {
+            io.print(separator + "No songs added to the database. (Hint: use the command \"add\")");
+            return songs;
+        }
         ListIterator<Song> it = songs.listIterator();
 
         io.print(separator + "Choose song (enter number):" + separator);
 
         while (it.hasNext()) {
-            io.print("[" + it.nextIndex() + "] " + it.next());
+            io.print("\t[" + it.nextIndex() + "] " + it.next());
         }
 
         return songs;
+    }
+
+    public List<Playlist> enumeratePlaylists() {
+        var playlists = playlistDao.list();
+        if (playlists.isEmpty()) {
+            io.print(separator + "No playlists added to the database. (Hint: use the command \"add\")");
+            return playlists;
+        }
+        ListIterator<Playlist> it = playlists.listIterator();
+
+        io.print(separator + "Choose playlist (enter number):" + separator);
+
+        while (it.hasNext()) {
+            io.print("\t[" + it.nextIndex() + "] " + it.next());
+        }
+
+        return playlists;
     }
 
     public void playPause() {
@@ -294,16 +454,5 @@ public class ConsoleUI implements UI {
         }
     }
 
-    public void addPlaylist() {
-        io.print("Name of the playlist:");
-        var name = io.nextLine();
-
-        var playlist = new Playlist(name, new Date(System.currentTimeMillis()));
-
-        playlistDao.create(playlist);
-
-        io.print(separator + separator + "Playlist created!" + separator + separator);
-
-    }
 
 }

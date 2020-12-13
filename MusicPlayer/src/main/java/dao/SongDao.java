@@ -19,6 +19,7 @@ public class SongDao implements Dao<Song, Integer> {
 
     /**
      * Insert a new song into the database
+     *
      * @param object a Song object
      * @return true, if creation was successful. Otherwise, returns false
      */
@@ -50,6 +51,7 @@ public class SongDao implements Dao<Song, Integer> {
 
     /**
      * Get a song from the database
+     *
      * @param key the id of the wanted song
      * @return the song, if it exists. Otherwise, returns null
      */
@@ -84,6 +86,7 @@ public class SongDao implements Dao<Song, Integer> {
 
     /**
      * Update a song in the database
+     *
      * @param object a Song object that has its id as a non-zero integer
      * @return the updated Song, if id is specified and exists. Otherwise, returns null
      */
@@ -92,7 +95,7 @@ public class SongDao implements Dao<Song, Integer> {
         if (object.getId() <= 0) {
             return null;
         }
-        
+
         String sql = "UPDATE Songs SET name = ?, created_at = ?, artist = ?, file = ? WHERE id = ?";
         try {
 
@@ -115,11 +118,12 @@ public class SongDao implements Dao<Song, Integer> {
 
     /**
      * Delete a song from the database
-     * @param key the id of the song
+     *
+     * @param song the id of the song
      * @return true, if the deletion was succesful. Otherwise, returns false (song doesn't exists, an error happened...)
      */
     @Override
-    public boolean delete(Integer key) {
+    public boolean delete(Song song) {
         String sql = "DELETE FROM Songs WHERE id = ?";
 
         var result = db.getConnection();
@@ -130,11 +134,12 @@ public class SongDao implements Dao<Song, Integer> {
 
             var conn = result.get();
             var stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, key);
+            stmt.setInt(1, song.getId());
 
             stmt.executeUpdate();
 
             conn.close();
+            deleteSongFromAllPlaylists(song);
             return true;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -144,6 +149,7 @@ public class SongDao implements Dao<Song, Integer> {
 
     /**
      * Get a list of all the songs in the database
+     *
      * @return a List of Songs
      */
     @Override
@@ -171,10 +177,91 @@ public class SongDao implements Dao<Song, Integer> {
 
         return songs;
     }
-    
-    
+
+    public boolean addSongToPlaylist(Song song, Playlist playlist) {
+        String sql = "INSERT INTO SongPlaylist (song_id, playlist_id) VALUES (?,?)";
+
+        try {
+            var result = db.getConnection();
+            if (result.isEmpty()) {
+                throw new SQLException();
+            }
+
+            var conn = result.get();
+
+            var stmt = conn.prepareStatement(sql);
+
+            stmt.setInt(1, song.getId());
+            stmt.setInt(2, playlist.getId());
+
+            stmt.executeUpdate();
+            conn.close();
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean deleteSongFromPlaylist(Song song, Playlist playlist) {
+        String sql = "DELETE FROM SongPlaylist WHERE song_id = ? && playlist_id = ?";
+
+        try {
+            var result = db.getConnection();
+            if (result.isEmpty()) {
+                throw new SQLException();
+            }
+
+            var conn = result.get();
+
+            var stmt = conn.prepareStatement(sql);
+
+            stmt.setInt(1, song.getId());
+            stmt.setInt(2, playlist.getId());
+
+            stmt.executeUpdate();
+            conn.close();
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean deleteSongFromAllPlaylists(Song song) {
+        String sql = "DELETE FROM SongPlaylist WHERE song_id = ?";
+
+        try {
+            var result = db.getConnection();
+            if (result.isEmpty()) {
+                throw new SQLException();
+            }
+
+            var conn = result.get();
+
+            var stmt = conn.prepareStatement(sql);
+
+            stmt.setInt(1, song.getId());
+            
+            stmt.executeUpdate();
+            conn.close();
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+
     /**
      * Set a song's attributes to a PreparedStatement
+     *
      * @param stmt PreparedStatement to be executed
      * @param song Song that is to be sqlified
      */
@@ -191,6 +278,7 @@ public class SongDao implements Dao<Song, Integer> {
 
     /**
      * Extract a Song object from a ResultSet
+     *
      * @param rs ResultSet containing values for each of Song's variables
      * @return the extracted Song, if succesful. Otherwise, null
      */
@@ -212,5 +300,5 @@ public class SongDao implements Dao<Song, Integer> {
 
         return song;
     }
-    
+
 }
