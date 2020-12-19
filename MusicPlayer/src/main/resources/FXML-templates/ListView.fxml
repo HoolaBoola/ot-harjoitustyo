@@ -1,0 +1,7 @@
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.ListView?>
+<?import ui.ListViewController?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml" alignment="CENTER">
+    <ListView fx:id="listView"/>
+</GridPane>

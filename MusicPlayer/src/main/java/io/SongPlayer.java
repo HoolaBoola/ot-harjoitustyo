@@ -46,6 +46,7 @@ public class SongPlayer {
             });
         } catch (JavaLayerException e) {
             e.printStackTrace();
+            return;
         }
         new Thread(() -> {
             try {
@@ -62,14 +63,16 @@ public class SongPlayer {
      * @param file a byte array containing the song
      */
     public void playSong(byte[] file) {
-
-        if (status.equals("PLAYING")) {
-            quit();
-        }
-        pausedOnFrame = 0;
-        stream = new ByteArrayInputStream(file);
+        status = "PLAYING";
+        setSong(file);
         continuePlaying();
 
+    }
+    
+    public void setSong(byte[] bytes) {
+        status = "SONG SET";
+        pausedOnFrame = 0;
+        stream = new ByteArrayInputStream(bytes);
     }
 
     /**

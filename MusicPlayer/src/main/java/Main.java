@@ -4,17 +4,20 @@ import database.DBManager;
 import io.ConsoleIO;
 import io.SongPlayer;
 import ui.ConsoleUI;
+import ui.GraphicalUI;
+
+import javax.swing.*;
 import java.util.Scanner;
 
 
 public class Main {
     public static void main(String[] args) {
 
-        ConsoleIO io = new ConsoleIO(new Scanner(System.in));
-        DBManager db = new DBManager("player.db");
-        SongDao songs = new SongDao(db);
-        PlaylistDao playlists = new PlaylistDao(db);
-        SongPlayer player = new SongPlayer();
+//        ConsoleIO io = new ConsoleIO(new Scanner(System.in));
+//        DBManager db = new DBManager("player.db");
+//        SongDao songs = new SongDao(db);
+//        PlaylistDao playlists = new PlaylistDao(db);
+//        SongPlayer player = new SongPlayer();
 
 
 //        try {
@@ -24,21 +27,15 @@ public class Main {
 //        } catch (JavaLayerException e) {
 //            e.printStackTrace();
 //        }
-        var ui = new ConsoleUI(io, playlists, songs, player);
-
-        ui.startApplication();
-        
-        
-//        GraphicalUI ui = new GraphicalUI();
+//        var ui = new ConsoleUI(io, playlists, songs, player);
+//
 //        ui.startApplication();
-//        try {
-//            UIManager manager;
-//            manager = new UIManager(new ConsoleUI(TerminalBuilder.terminal()));
-//            manager.start();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        ;
+        
+        
+        GraphicalUI ui = new GraphicalUI();
+        ui.startApplication();
+// 
+        
 
 
     }
