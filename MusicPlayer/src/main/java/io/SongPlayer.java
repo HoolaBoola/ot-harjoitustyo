@@ -64,6 +64,9 @@ public class SongPlayer {
      */
     public void playSong(byte[] file) {
         status = "PLAYING";
+        if (player != null) {
+            player.close();
+        }
         setSong(file);
         continuePlaying();
 

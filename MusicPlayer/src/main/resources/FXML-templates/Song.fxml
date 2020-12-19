@@ -25,25 +25,38 @@
          <children>
             <BorderPane layoutX="518.0" layoutY="10.0" prefHeight="75.0" prefWidth="166.0">
                <center>
-                  <Button fx:id="playSong" mnemonicParsing="false" text="Play" />
+                  <Button fx:id="playSong" mnemonicParsing="false" onAction="#play" text="Play" />
                </center>
             </BorderPane>
             <BorderPane GridPane.columnIndex="3">
                <right>
-                  <MenuButton fx:id="actions" mnemonicParsing="false" text="Actions" BorderPane.alignment="CENTER">
+                  <MenuButton fx:id="actions" mnemonicParsing="false" popupSide="RIGHT" text="Actions" BorderPane.alignment="CENTER_RIGHT">
                     <items>
-                      <MenuItem fx:id="addToPlaylist" mnemonicParsing="false" text="Add to playlist" />
-                      <MenuItem fx:id="deleteSong" mnemonicParsing="false" text="Delete" />
+                      <MenuItem fx:id="addToPlaylist" mnemonicParsing="false">
+                           <graphic>
+                              <BorderPane>
+                                 <right>
+                                    <MenuButton mnemonicParsing="false" popupSide="RIGHT" text="Add to playlist" BorderPane.alignment="CENTER">
+                                      <items>
+                                        <MenuItem mnemonicParsing="false" text="Action 1" />
+                                        <MenuItem mnemonicParsing="false" text="Action 2" />
+                                      </items>
+                                    </MenuButton>
+                                 </right>
+                              </BorderPane>
+                           </graphic>
+                        </MenuItem>
+                      <MenuItem fx:id="deleteSong" mnemonicParsing="false" onAction="#delete" text="Delete" />
                     </items>
                   </MenuButton>
                </right>
             </BorderPane>
-            <BorderPane GridPane.columnIndex="1" GridPane.columnSpan="2">
+            <BorderPane GridPane.columnIndex="1">
                <center>
                   <Label fx:id="songName" text="Label" />
                </center>
             </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2">
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
                <center>
                   <Label fx:id="songArtist" text="Label" BorderPane.alignment="CENTER" />
                </center>

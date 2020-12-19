@@ -16,7 +16,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.util.Pair;
+import javafx.scene.layout.Region;
 
 public class MenuController implements Initializable {
 
@@ -34,15 +34,14 @@ public class MenuController implements Initializable {
         songObservableList.addAll(songDao.list());
 
         System.out.println(songObservableList);
-
-
-//        ObservableList<SongController> oList = FXCollections.observableArrayList(list);
-//        songList.setItems(oList);
-//        List<SongController> songControllers = songs.stream().map(song -> new SongController(song)).collect(Collectors.toList());
     }
+
 
     @FXML
     private Button playPause;
+    
+    @FXML
+    private Label songPlaying;
 
     @FXML
     private ListView<Song> songList;
@@ -51,6 +50,11 @@ public class MenuController implements Initializable {
     private void newSong() {
         Dialog<Song> dialog = new Dialog<>();
         dialog.setTitle("New song");
+        dialog.setResizable(true);
+        dialog.getDialogPane().setPrefSize(300, 400);
+        dialog.getDialogPane().setMinHeight(300);
+        dialog.getDialogPane().setMinWidth(400);
+
 
         // Set the button types.
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
@@ -69,7 +73,7 @@ public class MenuController implements Initializable {
         name.setPromptText("name");
         TextField artist = new TextField();
         artist.setPromptText("artist");
-        
+
         Button button = new Button("...");
         Label fileStatus = new Label("");
         BorderPane bp = new BorderPane();
@@ -126,7 +130,6 @@ public class MenuController implements Initializable {
     @FXML
     private void songPlayPause() {
 
-        System.out.println(songList.getItems());
         switch (player.getStatus()) {
             case "PLAYING":
                 player.pauseSong();
@@ -141,12 +144,37 @@ public class MenuController implements Initializable {
         }
     }
 
+    public void deleteSong(Song song) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setResizable(true);
+        alert.getDialogPane().setPrefSize(300, 400);
+        alert.getDialogPane().setMinHeight(300);
+        alert.getDialogPane().setMinWidth(400);
+        alert.setTitle("Delete song");
+        alert.setHeaderText("You are about to delete song " + song.getName());
+        alert.setContentText("Are you ok with this?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            songDao.delete(song);
+            songList.getItems().removeAll(song);
+        }
+    }
+
+    public void songPlay(Song song) {
+        currentSong = song;
+        songPlaying.setText(song.toString());
+        player.playSong(song.getFile());
+        System.out.println("Something happened");
+        playPause.setText("PAUSE");
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         songObservableList = FXCollections.observableArrayList();
 
         songList.setItems(songObservableList);
-        songList.setCellFactory(songListView -> new SongListViewCell());
+        songList.setCellFactory(songListView -> new SongListViewCell(this));
     }
 
 
