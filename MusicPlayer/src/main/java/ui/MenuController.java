@@ -14,10 +14,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.*;
 
 public class MenuController implements Initializable {
 
@@ -26,18 +25,17 @@ public class MenuController implements Initializable {
     private SongDao songDao;
     private PlaylistDao playlistDao;
     private ObservableList<Song> songObservableList;
+    private List<Playlist> playlists;
 
     public void init(SongPlayer player, SongDao songDao, PlaylistDao playlistDao) {
         this.songDao = songDao;
         this.playlistDao = playlistDao;
         this.player = player;
-        playlists = playlistDao.list();
         songObservableList.addAll(songDao.list());
+        playlists = playlistDao.list();
 
-        System.out.println(songObservableList);
+        playlists.forEach(p -> playlistAccordion.getPanes().add(playlistPane(p)));
     }
-
-    private List<Playlist> playlists;
 
 
     @FXML
@@ -50,13 +48,16 @@ public class MenuController implements Initializable {
     private ListView<Song> songList;
 
     @FXML
+    private Accordion playlistAccordion;
+
+    @FXML
     private void newSong() {
         Dialog<Song> dialog = new Dialog<>();
         dialog.setTitle("New song");
         dialog.setResizable(true);
         dialog.getDialogPane().setPrefSize(300, 400);
         dialog.getDialogPane().setMinHeight(300);
-        dialog.getDialogPane().setMinWidth(400);
+        dialog.getDialogPane().setMinWidth(600);
 
 
         // Set the button types.
@@ -130,6 +131,65 @@ public class MenuController implements Initializable {
         });
     }
 
+    @FXML
+    private void newPlaylist() {
+        Dialog<Playlist> dialog = new Dialog<>();
+        dialog.setTitle("New playlist");
+        dialog.setResizable(true);
+        dialog.getDialogPane().setPrefSize(300, 400);
+        dialog.getDialogPane().setMinHeight(300);
+        dialog.getDialogPane().setMinWidth(600);
+
+
+        // Set the button types.
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setPadding(new Insets(20, 150, 10, 10));
+
+        Playlist playlist = new Playlist(null, null);
+
+        TextField name = new TextField();
+        name.setPromptText("name");
+        
+        gridPane.add(name, 1, 0);
+        gridPane.add(new Label("Song name:"), 0, 0);
+
+        dialog.getDialogPane().setContent(gridPane);
+
+        // Request focus on the username field by default.
+        Platform.runLater(() -> name.requestFocus());
+
+        // Convert the result to a username-password-pair when the login button is clicked.
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == okButtonType) {
+                playlist.setName(name.getText());
+                playlist.setCreated_at(new java.sql.Date(System.currentTimeMillis()));
+                return playlist;
+            }
+            return null;
+        });
+
+        Optional<Playlist> result = dialog.showAndWait();
+
+        result.ifPresent(s -> {
+            if (s.getName() == null) {
+                return;
+            }
+            playlistDao.create(s);
+            playlistAccordion.getPanes().add(playlistPane(s));
+            playlists.add(s);
+        });
+
+        songList.setItems(songObservableList);
+        
+        // so that songs can be added to the new playlist in the action menu
+        songList.setCellFactory(songListView -> new SongListViewCell(this));
+        songList.refresh();
+    }
 
     @FXML
     private void songPlayPause() {
@@ -157,12 +217,53 @@ public class MenuController implements Initializable {
         songList.setCellFactory(songListView -> new SongListViewCell(this));
     }
 
+    public TitledPane playlistPane(Playlist list) {
+        TitledPane pane = new TitledPane();
+        pane.setText(list.getName());
+
+        BorderPane bp = new BorderPane();
+
+        var child = playlistActions(list, pane);
+        bp.setTop(child);
+
+        BorderPane.setAlignment(child, Pos.CENTER);
+
+        pane.setContent(bp);
+
+
+        return pane;
+    }
+
+    public GridPane playlistActions(Playlist list, TitledPane tp) {
+        GridPane pane = new GridPane();
+        var width = 60;
+        Button delete = new Button("Delete");
+        delete.setPrefWidth(width);
+        delete.setOnAction(e -> {
+            deletePlaylist(list, tp);
+        });
+
+        Button edit = new Button("Edit");
+        edit.setPrefWidth(width);
+
+        Button play = new Button("Play");
+        play.setPrefWidth(width);
+
+        pane.setAlignment(Pos.CENTER);
+        pane.setHgap(100);
+
+        pane.add(play, 0, 0);
+        pane.add(edit, 1, 0);
+        pane.add(delete, 2, 0);
+
+        return pane;
+    }
+
     public List<Playlist> playlists() {
         return playlists;
     }
 
     public void addSongToPlaylist(Song song, Playlist playlist) {
-        System.out.println("toimii");
         songDao.addSongToPlaylist(song, playlist);
     }
 
@@ -172,6 +273,23 @@ public class MenuController implements Initializable {
         songPlaying.setText(song.toString());
         player.playSong(song.getFile());
         playPause.setText("PAUSE");
+    }
+
+    public void deletePlaylist(Playlist list, TitledPane pane) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setResizable(true);
+        alert.getDialogPane().setPrefSize(300, 400);
+        alert.getDialogPane().setMinHeight(300);
+        alert.getDialogPane().setMinWidth(400);
+        alert.setTitle("Delete playlist");
+        alert.setHeaderText("You are about to delete playlist " + list.getName());
+        alert.setContentText("Are you ok with this?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            playlistDao.delete(list);
+            playlistAccordion.getPanes().removeAll(pane);
+        }
     }
 
     public void deleteSong(Song song) {
@@ -271,5 +389,11 @@ public class MenuController implements Initializable {
 //            songList.getItems().addAll(newSong);
 
         }, () -> songList.getItems().addAll(song));
+    }
+    
+    private List<MenuItem> playlistitems;
+    
+    public List<MenuItem> getPlaylistItems() {
+        return null;
     }
 }

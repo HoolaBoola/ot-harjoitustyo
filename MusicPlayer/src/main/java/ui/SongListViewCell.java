@@ -41,7 +41,6 @@ public class SongListViewCell extends ListCell<Song> {
         menu.addSongToPlaylist(song, playlist);
     }
 
-    private FXMLLoader loader;
 
     @FXML
     public void play() {
@@ -65,6 +64,8 @@ public class SongListViewCell extends ListCell<Song> {
         return song;
     }
 
+    private FXMLLoader loader;
+    
     @Override
     protected void updateItem(Song song, boolean empty) {
         super.updateItem(song, empty);
