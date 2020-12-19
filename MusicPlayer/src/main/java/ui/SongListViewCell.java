@@ -1,39 +1,48 @@
 package ui;
 
+import dao.Playlist;
 import dao.Song;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SongListViewCell extends ListCell<Song> {
 
     private MenuController menu;
-    
+
     public SongListViewCell(MenuController menu) {
         this.menu = menu;
     }
-    
+
     @FXML
     private Label songName;
-    
+
     @FXML
     private Label songArtist;
-    
+
     @FXML
     private Button playSong;
-    
+
     @FXML
     private AnchorPane anchor;
 
-    private FXMLLoader loader;
+    @FXML
+    private MenuButton addToPlaylistMenuButton;
     
+    
+    public void addSongToPlaylist(Playlist playlist) {
+        menu.addSongToPlaylist(song, playlist);
+    }
+
+    private FXMLLoader loader;
+
     @FXML
     public void play() {
         System.out.println("Mmm");
@@ -42,15 +51,20 @@ public class SongListViewCell extends ListCell<Song> {
 
     @FXML
     public void delete() {
-            menu.deleteSong(song);
+        menu.deleteSong(song);
     }
     
+    @FXML
+    public void edit() {
+        menu.editSong(song);
+    }
+
     private Song song;
-    
+
     public Song getSong() {
         return song;
     }
-    
+
     @Override
     protected void updateItem(Song song, boolean empty) {
         super.updateItem(song, empty);
@@ -63,7 +77,7 @@ public class SongListViewCell extends ListCell<Song> {
 
         if (loader == null) {
             URL url = getClass().getClassLoader().getResource("FXML-templates/Song.fxml");
-            loader = new FXMLLoader(url); 
+            loader = new FXMLLoader(url);
             loader.setController(this);
             try {
                 loader.load();
@@ -76,5 +90,12 @@ public class SongListViewCell extends ListCell<Song> {
         songName.setText(song.getName());
         songArtist.setText(song.getArtist());
         this.song = song;
+
+        List<MenuItem> items = menu.playlists().stream().map(p -> {
+            var i = new MenuItem(p.getName());
+            i.setOnAction(e -> addSongToPlaylist(p));
+            return i;
+        }).collect(Collectors.toList());
+        addToPlaylistMenuButton.getItems().addAll(items);
     }
 }

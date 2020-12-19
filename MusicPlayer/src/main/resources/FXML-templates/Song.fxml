@@ -30,22 +30,18 @@
             </BorderPane>
             <BorderPane GridPane.columnIndex="3">
                <right>
-                  <MenuButton fx:id="actions" mnemonicParsing="false" popupSide="RIGHT" text="Actions" BorderPane.alignment="CENTER_RIGHT">
+                  <MenuButton fx:id="actions" maxWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" text="Actions" BorderPane.alignment="CENTER_LEFT">
                     <items>
                       <MenuItem fx:id="addToPlaylist" mnemonicParsing="false">
                            <graphic>
                               <BorderPane>
                                  <right>
-                                    <MenuButton mnemonicParsing="false" popupSide="RIGHT" text="Add to playlist" BorderPane.alignment="CENTER">
-                                      <items>
-                                        <MenuItem mnemonicParsing="false" text="Action 1" />
-                                        <MenuItem mnemonicParsing="false" text="Action 2" />
-                                      </items>
-                                    </MenuButton>
+                                    <MenuButton fx:id="addToPlaylistMenuButton" alignment="CENTER_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" popupSide="RIGHT" text="Add to playlist" textAlignment="RIGHT" BorderPane.alignment="CENTER" />
                                  </right>
                               </BorderPane>
                            </graphic>
                         </MenuItem>
+                        <MenuItem fx:id="editSong" mnemonicParsing="false" onAction="#edit" text="Edit" />
                       <MenuItem fx:id="deleteSong" mnemonicParsing="false" onAction="#delete" text="Delete" />
                     </items>
                   </MenuButton>
