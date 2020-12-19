@@ -2,6 +2,7 @@ package ui;
 
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import dao.Playlist;
 import dao.PlaylistDao;
@@ -33,11 +34,20 @@ public class MenuController implements Initializable {
         this.player = player;
         songObservableList.addAll(songDao.list());
         playlists = playlistDao.list();
-
         playlists.forEach(p -> playlistAccordion.getPanes().add(playlistPane(p)));
     }
 
 
+    @FXML
+    public void playNext() {
+        player.playNext();
+    }
+    
+    @FXML
+    public void playPrevious() {
+        player.playPrevious();
+    }
+    
     @FXML
     private Button playPause;
 
@@ -50,153 +60,13 @@ public class MenuController implements Initializable {
     @FXML
     private Accordion playlistAccordion;
 
-    @FXML
-    private void newSong() {
-        Dialog<Song> dialog = new Dialog<>();
-        dialog.setTitle("New song");
-        dialog.setResizable(true);
-        dialog.getDialogPane().setPrefSize(300, 400);
-        dialog.getDialogPane().setMinHeight(300);
-        dialog.getDialogPane().setMinWidth(600);
-
-
-        // Set the button types.
-        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
-
-        GridPane gridPane = new GridPane();
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
-        gridPane.setPadding(new Insets(20, 150, 10, 10));
-
-        byte[] file;
-
-        Song song = new Song(null, null, null, null);
-
-        TextField name = new TextField();
-        name.setPromptText("name");
-        TextField artist = new TextField();
-        artist.setPromptText("artist");
-
-        Button button = new Button("...");
-        Label fileStatus = new Label("");
-        BorderPane bp = new BorderPane();
-        bp.setCenter(button);
-        fileStatus.setPadding(new Insets(0, 40, 0, 0));
-        bp.setRight(fileStatus);
-
-        button.setOnAction(e -> {
-            var result = GraphicalFireRetriever.getFile("Audio file", "*.mp3", "*.wav");
-            if (result.isEmpty()) {
-                fileStatus.setText("Error");
-                return;
-            }
-
-            song.setFile(result.get());
-            fileStatus.setText("OK");
-        });
-
-        gridPane.add(name, 1, 0);
-        gridPane.add(new Label("Song name:"), 0, 0);
-        gridPane.add(artist, 1, 1);
-        gridPane.add(new Label("Artist:"), 0, 1);
-        gridPane.add(bp, 1, 2);
-        gridPane.add(new Label("File:"), 0, 2);
-
-
-        dialog.getDialogPane().setContent(gridPane);
-
-        // Request focus on the username field by default.
-        Platform.runLater(() -> name.requestFocus());
-
-        // Convert the result to a username-password-pair when the login button is clicked.
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == okButtonType) {
-                song.setName(name.getText());
-                song.setArtist(artist.getText());
-                song.setCreated_at(new java.sql.Date(System.currentTimeMillis()));
-                return song;
-            }
-            return null;
-        });
-
-        Optional<Song> result = dialog.showAndWait();
-
-        result.ifPresent(s -> {
-            if (s.getFile() == null) {
-                return;
-            }
-            songDao.create(s);
-            songObservableList.add(s);
-        });
-    }
-
-    @FXML
-    private void newPlaylist() {
-        Dialog<Playlist> dialog = new Dialog<>();
-        dialog.setTitle("New playlist");
-        dialog.setResizable(true);
-        dialog.getDialogPane().setPrefSize(300, 400);
-        dialog.getDialogPane().setMinHeight(300);
-        dialog.getDialogPane().setMinWidth(600);
-
-
-        // Set the button types.
-        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
-
-        GridPane gridPane = new GridPane();
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
-        gridPane.setPadding(new Insets(20, 150, 10, 10));
-
-        Playlist playlist = new Playlist(null, null);
-
-        TextField name = new TextField();
-        name.setPromptText("name");
-        
-        gridPane.add(name, 1, 0);
-        gridPane.add(new Label("Song name:"), 0, 0);
-
-        dialog.getDialogPane().setContent(gridPane);
-
-        // Request focus on the username field by default.
-        Platform.runLater(() -> name.requestFocus());
-
-        // Convert the result to a username-password-pair when the login button is clicked.
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == okButtonType) {
-                playlist.setName(name.getText());
-                playlist.setCreated_at(new java.sql.Date(System.currentTimeMillis()));
-                return playlist;
-            }
-            return null;
-        });
-
-        Optional<Playlist> result = dialog.showAndWait();
-
-        result.ifPresent(s -> {
-            if (s.getName() == null) {
-                return;
-            }
-            playlistDao.create(s);
-            playlistAccordion.getPanes().add(playlistPane(s));
-            playlists.add(s);
-        });
-
-        songList.setItems(songObservableList);
-        
-        // so that songs can be added to the new playlist in the action menu
-        songList.setCellFactory(songListView -> new SongListViewCell(this));
-        songList.refresh();
-    }
 
     @FXML
     private void songPlayPause() {
 
         switch (player.getStatus()) {
             case "PLAYING":
-                player.pauseSong();
+                player.pauseSong("PAUSED");
                 playPause.setText("Play");
                 break;
             case "NOT PLAYING":
@@ -219,6 +89,7 @@ public class MenuController implements Initializable {
 
     public TitledPane playlistPane(Playlist list) {
         TitledPane pane = new TitledPane();
+
         pane.setText(list.getName());
 
         BorderPane bp = new BorderPane();
@@ -230,6 +101,16 @@ public class MenuController implements Initializable {
 
         pane.setContent(bp);
 
+        ListView<Song> pls = new ListView<>();
+        bp.setCenter(pls);
+
+        pane.expandedProperty().addListener(e -> {
+            List<Song> songs = playlistDao.getSongsFromPlaylist(list);
+            ObservableList<Song> obsPls = FXCollections.observableArrayList();
+            obsPls.addAll(songs);
+            pls.setItems(obsPls);
+            pls.setCellFactory(songListView -> new SongInPlaylistViewCell(this, list));
+        });
 
         return pane;
     }
@@ -239,15 +120,15 @@ public class MenuController implements Initializable {
         var width = 60;
         Button delete = new Button("Delete");
         delete.setPrefWidth(width);
-        delete.setOnAction(e -> {
-            deletePlaylist(list, tp);
-        });
+        delete.setOnAction(e -> deletePlaylist(list, tp));
 
         Button edit = new Button("Edit");
         edit.setPrefWidth(width);
+        edit.setOnAction(e -> editPlaylist(list, tp));
 
         Button play = new Button("Play");
         play.setPrefWidth(width);
+        play.setOnAction(e -> playPlaylist(list));
 
         pane.setAlignment(Pos.CENTER);
         pane.setHgap(100);
@@ -272,7 +153,7 @@ public class MenuController implements Initializable {
         currentSong = song;
         songPlaying.setText(song.toString());
         player.playSong(song.getFile());
-        playPause.setText("PAUSE");
+        playPause.setText("Pause");
     }
 
     public void deletePlaylist(Playlist list, TitledPane pane) {
@@ -289,7 +170,67 @@ public class MenuController implements Initializable {
         if (result.get() == ButtonType.OK) {
             playlistDao.delete(list);
             playlistAccordion.getPanes().removeAll(pane);
+            playlists.remove(list);
         }
+
+        songList.setCellFactory(songListView -> new SongListViewCell(this));
+
+        songList.refresh();
+    }
+
+    public void editPlaylist(Playlist list, TitledPane pane) {
+        Dialog<Playlist> dialog = new Dialog<>();
+        dialog.setTitle("Edit playlist");
+        dialog.setResizable(true);
+        dialog.getDialogPane().setPrefSize(300, 400);
+        dialog.getDialogPane().setMinHeight(300);
+        dialog.getDialogPane().setMinWidth(600);
+
+        Playlist copy = new Playlist(list.getId(), list.getName(), list.getCreated_at());
+
+        // Set the button types.
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField name = new TextField();
+        name.setPromptText("name");
+
+        gridPane.add(name, 1, 0);
+        gridPane.add(new Label("Playlist name:"), 0, 0);
+
+        dialog.getDialogPane().setContent(gridPane);
+
+        // Request focus on the username field by default.
+        Platform.runLater(() -> name.requestFocus());
+
+        // Convert the result to a username-password-pair when the login button is clicked.
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == okButtonType) {
+                copy.setName(name.getText());
+                copy.setCreated_at(new java.sql.Date(System.currentTimeMillis()));
+                return copy;
+            }
+            return null;
+        });
+
+        Optional<Playlist> result = dialog.showAndWait();
+
+        result.ifPresent(s -> {
+            if (s == null || s.getName() == null) {
+                return;
+            }
+            playlistDao.update(s);
+            playlistAccordion.getPanes().remove(pane);
+            playlistAccordion.getPanes().add(playlistPane(copy));
+        });
+
+        songList.setCellFactory(songListView -> new SongListViewCell(this));
+        songList.refresh();
     }
 
     public void deleteSong(Song song) {
@@ -388,12 +329,168 @@ public class MenuController implements Initializable {
             songList.refresh();
 //            songList.getItems().addAll(newSong);
 
-        }, () -> songList.getItems().addAll(song));
+        }, () -> songList.refresh());
     }
-    
+
+    @FXML
+    private void newSong() {
+        Dialog<Song> dialog = new Dialog<>();
+        dialog.setTitle("New song");
+        dialog.setResizable(true);
+        dialog.getDialogPane().setPrefSize(300, 400);
+        dialog.getDialogPane().setMinHeight(300);
+        dialog.getDialogPane().setMinWidth(600);
+
+
+        // Set the button types.
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setPadding(new Insets(20, 150, 10, 10));
+
+        byte[] file;
+
+        Song song = new Song(null, null, null, null);
+
+        TextField name = new TextField();
+        name.setPromptText("name");
+        TextField artist = new TextField();
+        artist.setPromptText("artist");
+
+        Button button = new Button("...");
+        Label fileStatus = new Label("");
+        BorderPane bp = new BorderPane();
+        bp.setCenter(button);
+        fileStatus.setPadding(new Insets(0, 40, 0, 0));
+        bp.setRight(fileStatus);
+
+        button.setOnAction(e -> {
+            var result = GraphicalFireRetriever.getFile("Audio file", "*.mp3");
+            if (result.isEmpty()) {
+                fileStatus.setText("Error");
+                return;
+            }
+
+            song.setFile(result.get());
+            fileStatus.setText("OK");
+        });
+
+        gridPane.add(name, 1, 0);
+        gridPane.add(new Label("Song name:"), 0, 0);
+        gridPane.add(artist, 1, 1);
+        gridPane.add(new Label("Artist:"), 0, 1);
+        gridPane.add(bp, 1, 2);
+        gridPane.add(new Label("File:"), 0, 2);
+
+
+        dialog.getDialogPane().setContent(gridPane);
+
+        // Request focus on the username field by default.
+        Platform.runLater(() -> name.requestFocus());
+
+        // Convert the result to a username-password-pair when the login button is clicked.
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == okButtonType) {
+                song.setName(name.getText());
+                song.setArtist(artist.getText());
+                song.setCreated_at(new java.sql.Date(System.currentTimeMillis()));
+                return song;
+            }
+            return null;
+        });
+
+        Optional<Song> result = dialog.showAndWait();
+
+        result.ifPresent(s -> {
+            if (s.getFile() == null) {
+                return;
+            }
+            songDao.create(s);
+            songObservableList.add(s);
+        });
+    }
+
+    @FXML
+    private void newPlaylist() {
+        Dialog<Playlist> dialog = new Dialog<>();
+        dialog.setTitle("New playlist");
+        dialog.setResizable(true);
+        dialog.getDialogPane().setPrefSize(300, 400);
+        dialog.getDialogPane().setMinHeight(300);
+        dialog.getDialogPane().setMinWidth(600);
+
+
+        // Set the button types.
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setPadding(new Insets(20, 150, 10, 10));
+
+        Playlist playlist = new Playlist(null, null);
+
+        TextField name = new TextField();
+        name.setPromptText("name");
+
+        gridPane.add(name, 1, 0);
+        gridPane.add(new Label("Playlist name:"), 0, 0);
+
+        dialog.getDialogPane().setContent(gridPane);
+
+        // Request focus on the username field by default.
+        Platform.runLater(() -> name.requestFocus());
+
+        // Convert the result to a username-password-pair when the login button is clicked.
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == okButtonType) {
+                playlist.setName(name.getText());
+                playlist.setCreated_at(new java.sql.Date(System.currentTimeMillis()));
+                return playlist;
+            }
+            return null;
+        });
+
+        Optional<Playlist> result = dialog.showAndWait();
+
+        result.ifPresent(s -> {
+            if (s.getName() == null) {
+                return;
+            }
+            playlistDao.create(s);
+            playlistAccordion.getPanes().add(playlistPane(s));
+            playlists.add(s);
+        });
+
+
+        songList.setCellFactory(songListView -> new SongListViewCell(this));
+
+        songList.refresh();
+    }
+
+
     private List<MenuItem> playlistitems;
-    
+
     public List<MenuItem> getPlaylistItems() {
         return null;
+    }
+
+    public void playPlaylist(Playlist list) {
+        List<byte[]> songs = playlistDao
+            .getSongsFromPlaylist(list)
+            .stream()
+            .map(s -> s.getFile())
+            .collect(Collectors.toList());
+        
+        player.playQueue(songs);
+        playPause.setText("Pause");
+    }
+
+    public void deleteSongFromPlaylist(Song song, Playlist list) {
+        songDao.deleteSongFromPlaylist(song, list);
     }
 }

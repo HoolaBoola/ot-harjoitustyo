@@ -206,7 +206,7 @@ public class SongDao implements Dao<Song, Integer> {
     }
 
     public boolean deleteSongFromPlaylist(Song song, Playlist playlist) {
-        String sql = "DELETE FROM SongPlaylist WHERE song_id = ? && playlist_id = ?";
+        String sql = "DELETE FROM SongPlaylist WHERE song_id = ? AND playlist_id = ?";
 
         try {
             var result = db.getConnection();

@@ -412,7 +412,7 @@ public class ConsoleUI implements UI {
     public void playPause() {
         switch (player.getStatus()) {
             case "PLAYING":
-                player.pauseSong();
+                player.pauseSong("PAUSED");
                 break;
             case "PAUSED":
                 player.continuePlaying();

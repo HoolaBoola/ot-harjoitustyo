@@ -8,13 +8,15 @@ import javazoom.jl.player.advanced.PlaybackListener;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.*;
 
 public class SongPlayer {
 
     private AdvancedPlayer player;
     private String status = "NOT PLAYING";
     private InputStream stream;
-    
+    private ArrayDeque<byte[]> queue;
+    private ArrayDeque<byte[]> previous = new ArrayDeque<>();
 
     private int pausedOnFrame = 0;
 
@@ -34,7 +36,13 @@ public class SongPlayer {
             player.setPlayBackListener(new PlaybackListener() {
                 @Override
                 public void playbackFinished(PlaybackEvent event) {
-                    status = "PAUSED";
+                    if (!status.equals("PAUSED")) {
+                        status = "FINISHED";
+                        if (queue != null && queue.size() > 0) {
+                            byte[] next = queue.pollFirst();
+                            playSong(next);
+                        }
+                    }
                     pausedOnFrame = event.getFrame();
                 }
 
@@ -69,23 +77,49 @@ public class SongPlayer {
         }
         setSong(file);
         continuePlaying();
-
+    }
+    
+    public void playQueue(List<byte[]> queue) {
+        Collections.shuffle(queue);
+        this.queue = new ArrayDeque<>(queue);
+        playSong(this.queue.pollFirst());
     }
     
     public void setSong(byte[] bytes) {
         status = "SONG SET";
         pausedOnFrame = 0;
         stream = new ByteArrayInputStream(bytes);
+        previous.addLast(bytes);
+        if (previous.size() > 10) {
+            previous.pollFirst();
+        }
+    }
+    
+    public void playNext() {
+        if (queue == null || queue.size() == 0) {
+            return;
+        }
+        playSong(queue.pollFirst());
+    }
+    
+    public void playPrevious() {
+        if (previous.size() <= 1) {
+            return;
+        }
+        byte[] next = previous.pollLast();
+        queue.addFirst(next);
+        playSong(previous.pollLast());
     }
 
     /**
      * pause the player
+     * @param status
      */
-    public void pauseSong() {
+    public void pauseSong(String status) {
         if (player == null) {
             return;
         }
-
+        this.status = status;
         player.stop();
 
 

@@ -87,7 +87,7 @@
                         </BorderPane>
                         <BorderPane layoutX="211.0" layoutY="10.0" prefHeight="51.0" prefWidth="201.0" GridPane.rowIndex="1">
                            <center>
-                              <Button fx:id="previous" mnemonicParsing="false" prefHeight="35.0" prefWidth="102.0" text="Previous" BorderPane.alignment="CENTER">
+                              <Button fx:id="previous" mnemonicParsing="false" onAction="#playPrevious" prefHeight="35.0" prefWidth="102.0" text="Previous" BorderPane.alignment="CENTER">
                                  <BorderPane.margin>
                                     <Insets bottom="10.0" left="30.0" right="10.0" top="10.0" />
                                  </BorderPane.margin>

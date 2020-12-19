@@ -3,6 +3,7 @@ package dao;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Playlist {
     private int id;
@@ -14,7 +15,22 @@ public class Playlist {
     public String toString() {
         return name + " - " + songs.size() + " songs";
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Playlist)) return false;
+        Playlist playlist = (Playlist) o;
+        return getId() == playlist.getId() &&
+            Objects.equals(getName(), playlist.getName()) &&
+            Objects.equals(getCreated_at(), playlist.getCreated_at());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getCreated_at());
+    }
+
     public String info() {
         return name + " - " + songs.size() + " songs  (Created: " + created_at + ")";
     }

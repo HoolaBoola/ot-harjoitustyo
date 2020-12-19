@@ -53,7 +53,7 @@ public class SongPlayerTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        player.pauseSong();
+        player.pauseSong("PAUSED");
 
         assertEquals("PAUSED", player.getStatus());
 
@@ -75,7 +75,7 @@ public class SongPlayerTest {
 
         assertEquals("PLAYING", player.getStatus());
 
-        player.pauseSong();
+        player.pauseSong("PAUSED");
 
         assertEquals("PAUSED", player.getStatus());
 
@@ -121,7 +121,7 @@ public class SongPlayerTest {
 
     @Test
     public void pauseSongDoesNothingIfNoSong() {
-        player.pauseSong();
+        player.pauseSong("PAUSED");
         assertEquals("NOT PLAYING", player.getStatus());
     }
 
