@@ -146,6 +146,7 @@ public class MenuController implements Initializable {
 
     public void addSongToPlaylist(Song song, Playlist playlist) {
         songDao.addSongToPlaylist(song, playlist);
+        songList.refresh();
     }
 
 
@@ -248,6 +249,8 @@ public class MenuController implements Initializable {
             songDao.delete(song);
             songList.getItems().removeAll(song);
         }
+        
+        songList.refresh();
     }
 
     public void editSong(Song song) {
@@ -468,16 +471,9 @@ public class MenuController implements Initializable {
 
 
         songList.setCellFactory(songListView -> new SongListViewCell(this));
-
         songList.refresh();
     }
-
-
-    private List<MenuItem> playlistitems;
-
-    public List<MenuItem> getPlaylistItems() {
-        return null;
-    }
+    
 
     public void playPlaylist(Playlist list) {
         List<byte[]> songs = playlistDao

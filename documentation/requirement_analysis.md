@@ -24,6 +24,7 @@ The application is a minimalistic music player that allows the user to load thei
 * Play playlists
     * "Next" and "Previous" buttons to switch between songs
 * A `jar` package can be created with `mvn package`
+    * Before creating the jar, the desired path for the database file can be chosen in `config.properties` in the resources folder
 
 ## Database
 
