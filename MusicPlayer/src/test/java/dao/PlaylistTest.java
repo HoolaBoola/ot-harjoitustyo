@@ -32,11 +32,7 @@ public class PlaylistTest {
 
     @Test
     public void testToString() {
-        assertEquals("Playlist{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", created_at=" + created_at +
-            '}', list.toString());
+        assertEquals(name + " - " + list.getSongs().size() + " songs", list.toString());
     }
 
     @Test

@@ -23,6 +23,7 @@
                     <excludes>
                         <exclude>ui/*</exclude>
                         <exclude>default/*</exclude>
+                        <exclude>io/Song*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

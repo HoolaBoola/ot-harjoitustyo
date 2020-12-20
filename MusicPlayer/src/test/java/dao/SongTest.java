@@ -150,7 +150,7 @@ public class SongTest {
 
     @Test
     public void info() {
-        assertEquals(artist + " - " + name + " (Created at: " + created_at + ")", song.info());
+        assertEquals(artist + " - " + name + " (Created: " + created_at + ")", song.info());
     }
     
     @Test
