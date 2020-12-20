@@ -40,6 +40,12 @@ Kattavuusraporttia voi tarkastella avaamalla selaimella tiedosto target/site/jac
 
 GitHubin Actioneissa tapahtuva testaus ei tällä hetkellä mene läpi, sillä SongPlayerTest vaatii musiikin soittoon sellaisia resursseja, joita ilmeisesti palvelimella ei ole.
 
+# JavaDoc-tiedostojen generointi
+
+JavaDoc-tiedot voi generoida komennolla
+
+`mvn javadoc:javadoc`
+
 # Suoritettavan jarin generointi
 
 Komento
