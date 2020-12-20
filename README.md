@@ -9,7 +9,7 @@ Dokumentaatio
 
 [Vaatimusmäärittely](documentation/requirement_analysis.md)
 
-Arkkitehtuurikuvaus (ei valmis)
+[Arkkitehtuurikuvaus](documentation/architecture.md)
 
 Testausdokumentti (ei valmis)
 

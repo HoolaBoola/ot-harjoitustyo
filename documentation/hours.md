@@ -21,5 +21,5 @@
 | 13.12. | 2    | Songs can be added to and deleted from playlists |
 | 18.12. | 10   | Created skeleton for graphical ui |
 | 19.12. | 10   | Finished graphical UI |
-| 20.12. | 3    | Added documentation |
-| Total | 61 | |
+| 20.12. | 5    | Added documentation & tests|
+| Total | 63 | |
