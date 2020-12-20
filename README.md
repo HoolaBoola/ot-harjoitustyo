@@ -11,7 +11,7 @@ Dokumentaatio
 
 [Arkkitehtuurikuvaus](documentation/architecture.md)
 
-Testausdokumentti (ei valmis)
+[Testausdokumentti](documentation/testing.md)
 
 [Työaikakirjanpito](documentation/hours.md)
 
