@@ -21,8 +21,7 @@ public class Playlist {
         if (this == o) return true;
         if (!(o instanceof Playlist)) return false;
         Playlist playlist = (Playlist) o;
-        return getId() == playlist.getId() &&
-            Objects.equals(getName(), playlist.getName()) &&
+        return  Objects.equals(getName(), playlist.getName()) &&
             Objects.equals(getCreated_at(), playlist.getCreated_at());
     }
 

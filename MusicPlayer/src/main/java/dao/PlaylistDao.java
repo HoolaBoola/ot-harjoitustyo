@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
+/**
+ * Dao to handle Playlists between the application and the database
+ */
 public class PlaylistDao implements Dao<Playlist, Integer> {
 
     private DBManager db;
@@ -18,6 +22,10 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
         this.db = db;
     }
 
+    /**
+     * @param object new Playlist to be created
+     * @return true, unless an error interrupted the process. Then, returns false
+     */
     @Override
     public boolean create(Playlist object) {
         String sql = "INSERT INTO Playlists"
@@ -33,7 +41,7 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
             PreparedStatement stmt = conn.prepareStatement(sql);
             sqlify(stmt, object);
             stmt.executeUpdate();
-            
+
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -41,12 +49,16 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
         }
         return true;
     }
-    
+
+    /**
+     * @param playlist
+     * @return list of songs that are in the playlist
+     */
     public List<Song> getSongsFromPlaylist(Playlist playlist) {
         String sql = "SELECT Songs.* FROM Songs " +
             " JOIN SongPlaylist ON id = song_id " +
             " WHERE playlist_id = ?";
-        
+
         List<Song> songs = new ArrayList<>();
 
         try {
@@ -67,10 +79,18 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        } catch (NullPointerException e) {
+            // stmt throws a NPE if nothing is found?
         }
         return songs;
     }
 
+    /**
+     * Fetch playlist with the given key
+     *
+     * @param key the id of the playlist
+     * @return
+     */
     @Override
     public Playlist read(Integer key) {
         Playlist wanted = null;
@@ -95,12 +115,16 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
-        wanted.setSongs(getSongsFromPlaylist(wanted));
-
+        if (wanted != null) {
+            wanted.setSongs(getSongsFromPlaylist(wanted));
+        }
         return wanted;
     }
 
+    /**
+     * @param object
+     * @return the updated object from the database
+     */
     @Override
     public Playlist update(Playlist object) {
         String sql = "UPDATE Playlists SET name = ?, created_at = ? WHERE id = ?";
@@ -113,18 +137,24 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
 
             var conn = result.get();
             var stmt = conn.prepareStatement(sql);
-            
+
             sqlify(stmt, object);
             stmt.setInt(3, object.getId());
             stmt.executeUpdate();
-            
+
             conn.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return read(object.getId());    
+        return read(object.getId());
     }
 
+    /**
+     * Delete playlist from database and remove song-list pairs from SongPlaylist
+     *
+     * @param playlist
+     * @return true, unless an error interrupted the process. Then, returns false
+     */
     @Override
     public boolean delete(Playlist playlist) {
         String sql = "DELETE FROM Playlists WHERE id = ?";
@@ -147,9 +177,16 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return false;    
+        return false;
     }
-    
+
+
+    /**
+     * Delete all entries from SongPlaylist where the playlist id is the same as the parameter's
+     *
+     * @param playlist
+     * @return true, unless an error interrupted the process. Then, returns false
+     */
     public boolean deleteAllSongsFromPlaylist(Playlist playlist) {
         String sql = "DELETE FROM SongPlaylist WHERE playlist_id = ?";
 
@@ -173,6 +210,9 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
         return false;
     }
 
+    /**
+     * @return list containing all playlists in the database
+     */
     @Override
     public List<Playlist> list() {
         ArrayList<Playlist> playlists = new ArrayList<>();
@@ -202,6 +242,13 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
 
     }
 
+
+    /**
+     * "Converts" playlist into SQL statement
+     *
+     * @param stmt     prepared statement
+     * @param playlist playlist from which the statement receives parameters
+     */
     private static void sqlify(PreparedStatement stmt, Playlist playlist) {
         try {
             stmt.setString(1, playlist.getName());
@@ -211,6 +258,13 @@ public class PlaylistDao implements Dao<Playlist, Integer> {
         }
     }
 
+
+    /**
+     * Extract a Playlist object from a resultset
+     *
+     * @param rs ResultSet containing the information necessary to form a playlist
+     * @return the created playlist
+     */
     private static Playlist songify(ResultSet rs) {
         Playlist playlist = null;
         try {

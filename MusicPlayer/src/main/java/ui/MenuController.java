@@ -28,6 +28,11 @@ public class MenuController implements Initializable {
     private ObservableList<Song> songObservableList;
     private List<Playlist> playlists;
 
+    /**
+     * @param player 
+     * @param songDao
+     * @param playlistDao
+     */
     public void init(SongPlayer player, SongDao songDao, PlaylistDao playlistDao) {
         this.songDao = songDao;
         this.playlistDao = playlistDao;
@@ -144,12 +149,19 @@ public class MenuController implements Initializable {
         return playlists;
     }
 
+    /**
+     * @param song 
+     * @param playlist
+     */
     public void addSongToPlaylist(Song song, Playlist playlist) {
         songDao.addSongToPlaylist(song, playlist);
         songList.refresh();
     }
 
 
+    /**
+     * @param song 
+     */
     public void songPlay(Song song) {
         currentSong = song;
         songPlaying.setText(song.toString());
@@ -157,6 +169,10 @@ public class MenuController implements Initializable {
         playPause.setText("Pause");
     }
 
+    /**
+     * @param list 
+     * @param pane
+     */
     public void deletePlaylist(Playlist list, TitledPane pane) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setResizable(true);
@@ -179,6 +195,10 @@ public class MenuController implements Initializable {
         songList.refresh();
     }
 
+    /**
+     * @param list 
+     * @param pane
+     */
     public void editPlaylist(Playlist list, TitledPane pane) {
         Dialog<Playlist> dialog = new Dialog<>();
         dialog.setTitle("Edit playlist");
