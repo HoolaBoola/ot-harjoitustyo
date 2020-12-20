@@ -103,6 +103,9 @@ public class SongPlayer {
     }
     
     public void playPrevious() {
+        if (queue == null) {
+            queue = new ArrayDeque<>();
+        }
         if (previous.size() <= 1) {
             return;
         }

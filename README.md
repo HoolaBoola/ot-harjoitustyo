@@ -5,7 +5,7 @@ Sovelluksen avulla käyttäjien on mahdollista lisätä äänitiedostoja musiikk
 
 Dokumentaatio
 ------------
-Käyttöohje (ei valmis)
+[Käyttöohje](documentation/user_guide.md) 
 
 [Vaatimusmäärittely](documentation/requirement_analysis.md)
 

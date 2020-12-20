@@ -44,7 +44,6 @@ public class SongListViewCell extends ListCell<Song> {
 
     @FXML
     public void play() {
-        System.out.println("Mmm");
         menu.songPlay(song);
     }
 

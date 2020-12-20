@@ -5,6 +5,7 @@ import dao.SongDao;
 import database.DBManager;
 import io.SongPlayer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,34 +19,37 @@ import java.net.URL;
 
 public class GraphicalUI extends Application implements UI {
 
-    public void startApplication() {
-        launch(GraphicalUI.class);
+    private SongDao songDao;
+    private PlaylistDao playlistDao;
+    private SongPlayer player;
+
+    public GraphicalUI(SongDao songDao, PlaylistDao playlistDao, SongPlayer player) {
+        this.songDao = songDao;
+        this.player = player;
+        this.playlistDao = playlistDao;
     }
 
     @Override
     public void start(Stage stage) throws IOException {
-        DBManager man = new DBManager("player.db");
-        SongDao songDao = new SongDao(man);
-        SongPlayer player = new SongPlayer();
-        
+
+
 //        player.setSong(GraphicalFireRetriever.getFile("Audio file", "*.mp3").get());
 
-        PlaylistDao playlistDao = new PlaylistDao(man);
 
         Scene scene = new Scene(new Pane());
         ScreenController screenController = new ScreenController(scene);
-        
+
         URL url = getClass().getClassLoader().getResource("FXML-templates/IncrementUI.fxml");
         FXMLLoader loader = new FXMLLoader(url);
         Parent root = loader.load();
 
         MenuController menu = loader.getController();
         menu.init(player, songDao, playlistDao);
-        
+
         screenController.addScreen("menu", root);
         screenController.activate("menu");
         stage.setScene(scene);
-        
+
         stage.setMinWidth(800);
         stage.setMinHeight(800);
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -61,7 +65,19 @@ public class GraphicalUI extends Application implements UI {
             }
         });
         stage.show();
-        
-        
+
+
+    }
+
+    @Override
+    public void startApplication() {
+        Platform.startup(() -> {
+            Stage stage = new Stage();
+            try {
+                start(stage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

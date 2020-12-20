@@ -6,19 +6,25 @@ The application is a minimalistic music player that allows the user to load thei
 
 ## Planned Features
 
-* ✓ Add new songs
-* ✓ The application will remember songs added to it
+* Add new songs
+* The application will remember songs added to it
     * allows the 
         * deletion 
         * editing (name, artist...) of songs
 * Combine multiple songs into a playlist
     * Playlists will also have ways to edit and delete them
-    * Cover images for playlists (Will not happen...)
+* The application will remember songs added to it
+    * allows the 
+        * deletion 
+        * editing (name, artist...) of songs
 * Browse added 
     * playlists
-    * ✓ songs
-* ✓ A `jar` package can be created with `mvn package`
+    * songs
+* Play individual songs
+* Play playlists
+    * "Next" and "Previous" buttons to switch between songs
+* A `jar` package can be created with `mvn package`
 
-## Simple database
+## Database
 
 ![Database diagram](./database_diagram.png)
